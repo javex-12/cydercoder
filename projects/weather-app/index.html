@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherNow - Real-time Weather App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="app-title">
+                <span class="weather-icon">🌤️</span>
+                WeatherNow
+            </h1>
+        </header>
+
+        <main class="main">
+            <!-- Search Section -->
+            <div class="search-section">
+                <form class="search-form" id="searchForm">
+                    <input 
+                        type="text" 
+                        id="cityInput" 
+                        placeholder="Enter city name..." 
+                        class="search-input"
+                    >
+                    <button type="submit" class="search-btn">
+                        <span class="search-icon">🔍</span>
+                    </button>
+                </form>
+                <button class="location-btn" id="locationBtn">
+                    <span class="location-icon">📍</span>
+                    Use My Location
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Getting weather data...</p>
+            </div>
+
+            <!-- Error State -->
+            <div class="error" id="error">
+                <div class="error-icon">❌</div>
+                <h3>Oops! Something went wrong</h3>
+                <p id="errorMessage">Please try again later.</p>
+                <button class="retry-btn" onclick="location.reload()">Retry</button>
+            </div>
+
+            <!-- Weather Display -->
+            <div class="weather-display" id="weatherDisplay">
+                <!-- Current Weather -->
+                <div class="current-weather">
+                    <div class="location-info">
+                        <h2 class="city-name" id="cityName">Lagos</h2>
+                        <p class="country" id="country">Nigeria</p>
+                        <p class="date-time" id="dateTime">Monday, Dec 25, 2024 - 2:30 PM</p>
+                    </div>
+                    
+                    <div class="weather-main">
+                        <div class="temperature-section">
+                            <span class="temperature" id="temperature">28°</span>
+                            <div class="temp-unit">
+                                <button class="unit-btn active" data-unit="celsius">°C</button>
+                                <button class="unit-btn" data-unit="fahrenheit">°F</button>
+                            </div>
+                        </div>
+                        
+                        <div class="weather-info">
+                            <div class="weather-icon-large" id="weatherIcon">☀️</div>
+                            <p class="weather-description" id="weatherDescription">Sunny</p>
+                            <p class="feels-like">Feels like <span id="feelsLike">32°</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather Details -->
+                <div class="weather-details">
+                    <div class="detail-card">
+                        <div class="detail-icon">💨</div>
+                        <div class="detail-info">
+                            <span class="detail-label">Wind Speed</span>
+                            <span class="detail-value" id="windSpeed">15 km/h</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <div class="detail-icon">💧</div>
+                        <div class="detail-info">
+                            <span class="detail-label">Humidity</span>
+                            <span class="detail-value" id="humidity">65%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <div class="detail-icon">👁️</div>
+                        <div class="detail-info">
+                            <span class="detail-label">Visibility</span>
+                            <span class="detail-value" id="visibility">10 km</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <div class="detail-icon">🌡️</div>
+                        <div class="detail-info">
+                            <span class="detail-label">Pressure</span>
+                            <span class="detail-value" id="pressure">1013 hPa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather Dashboard -->
+                <div class="dashboard-section">
+                    <div class="dashboard-item hourly-forecast">
+                        <h3 class="dashboard-title">Hourly Forecast</h3>
+                        <div class="hourly-forecast-list" id="hourlyForecastList">
+                            <!-- Hourly forecast items will be dynamically added -->
+                        </div>
+                    </div>
+                    <div class="dashboard-item-group">
+                        <div class="dashboard-item temperature-chart">
+                            <h3 class="dashboard-title">5-Day Temperature Trend</h3>
+                            <canvas id="tempChart"></canvas>
+                        </div>
+                        <div class="dashboard-item-group-side">
+                            <div class="dashboard-item wind-gauge">
+                                <h3 class="dashboard-title">Wind Speed</h3>
+                                <canvas id="windGauge"></canvas>
+                                <div class="gauge-value" id="windGaugeValue"></div>
+                            </div>
+                            <div class="dashboard-item pressure-gauge">
+                                <h3 class="dashboard-title">Pressure</h3>
+                                <canvas id="pressureGauge"></canvas>
+                                <div class="gauge-value" id="pressureGaugeValue"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5-Day Forecast -->
+                <div class="forecast-section">
+                    <h3 class="forecast-title">5-Day Forecast</h3>
+                    <div class="forecast-list" id="forecastList">
+                        <!-- Forecast items will be dynamically added -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Welcome State -->
+            <div class="welcome-state" id="welcomeState">
+                <div class="welcome-icon">🌍</div>
+                <h3>Welcome to WeatherNow</h3>
+                <p>Search for a city or use your current location to get started!</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

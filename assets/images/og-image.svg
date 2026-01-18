@@ -1,0 +1,23 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <rect x="50" y="50" width="1100" height="530" rx="20" fill="#1a1a1a" stroke="#3b82f6" stroke-width="2"/>
+  
+  <!-- Background Pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#333" stroke-width="1" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <rect x="50" y="50" width="1100" height="530" fill="url(#grid)"/>
+  
+  <!-- Main Content -->
+  <text x="600" y="250" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="48" font-weight="bold">Michael Dosunmu</text>
+  <text x="600" y="300" text-anchor="middle" fill="#3b82f6" font-family="Arial, sans-serif" font-size="32" font-weight="600">Web Developer &amp; Designer</text>
+  <text x="600" y="380" text-anchor="middle" fill="#b3b3b3" font-family="Arial, sans-serif" font-size="24">Creating beautiful, functional digital experiences</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="200" cy="150" r="3" fill="#3b82f6" opacity="0.6"/>
+  <circle cx="1000" cy="200" r="2" fill="#3b82f6" opacity="0.4"/>
+  <circle cx="150" cy="450" r="2" fill="#3b82f6" opacity="0.5"/>
+  <circle cx="1050" cy="480" r="3" fill="#3b82f6" opacity="0.7"/>
+</svg>

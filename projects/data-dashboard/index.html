@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Pro - Data Visualization Dashboard</title>
+    <meta name="description" content="Professional data analytics dashboard with interactive charts and real-time insights.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">📊</span>
+                    <span class="logo-text">Analytics Pro</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item active">
+                        <a href="#overview" class="nav-link">
+                            <span class="nav-icon">📈</span>
+                            <span class="nav-text">Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#sales" class="nav-link">
+                            <span class="nav-icon">💰</span>
+                            <span class="nav-text">Sales</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#users" class="nav-link">
+                            <span class="nav-icon">👥</span>
+                            <span class="nav-text">Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#products" class="nav-link">
+                            <span class="nav-icon">📦</span>
+                            <span class="nav-text">Products</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#reports" class="nav-link">
+                            <span class="nav-icon">📋</span>
+                            <span class="nav-text">Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <span class="user-name">John Analyst</span>
+                        <span class="user-role">Data Analyst</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">☰</button>
+                    <h1 class="page-title">Dashboard Overview</h1>
+                </div>
+                
+                <div class="header-right">
+                    <div class="date-range">
+                        <select id="dateRange" class="date-select">
+                            <option value="7">Last 7 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                            <option value="365">Last year</option>
+                        </select>
+                    </div>
+                    
+                    <button class="refresh-btn" id="refreshBtn">🔄</button>
+                    <button class="export-btn" id="exportBtn">📤</button>
+                </div>
+            </header>
+            
+            <!-- KPI Cards -->
+            <section class="kpi-section">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-icon">💰</span>
+                            <span class="kpi-trend positive">+12.5%</span>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-value" data-target="125000">$0</h3>
+                            <p class="kpi-label">Total Revenue</p>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-icon">👥</span>
+                            <span class="kpi-trend positive">+8.3%</span>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-value" data-target="15420">0</h3>
+                            <p class="kpi-label">Active Users</p>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-icon">🛒</span>
+                            <span class="kpi-trend positive">+15.7%</span>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-value" data-target="2847">0</h3>
+                            <p class="kpi-label">Orders</p>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-icon">📈</span>
+                            <span class="kpi-trend negative">-2.1%</span>
+                        </div>
+                        <div class="kpi-content">
+                            <h3 class="kpi-value" data-target="3.2">0</h3>
+                            <p class="kpi-label">Conversion Rate (%)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="charts-grid">
+                    <!-- Revenue Chart -->
+                    <div class="chart-card large">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Revenue Trend</h3>
+                            <div class="chart-controls">
+                                <button class="chart-btn active" data-period="daily">Daily</button>
+                                <button class="chart-btn" data-period="weekly">Weekly</button>
+                                <button class="chart-btn" data-period="monthly">Monthly</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- User Analytics -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">User Analytics</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="userChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Performance -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Top Products</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="productChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Geographic Distribution -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Geographic Distribution</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="geoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Data Tables -->
+            <section class="tables-section">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3 class="table-title">Recent Transactions</h3>
+                        <div class="table-controls">
+                            <input type="search" placeholder="Search transactions..." class="search-input" id="searchInput">
+                            <button class="filter-btn" id="filterBtn">🔍</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table" id="transactionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Customer</th>
+                                    <th>Product</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="table-footer">
+                        <div class="pagination">
+                            <button class="page-btn" id="prevPage">‹</button>
+                            <span class="page-info">Page 1 of 10</span>
+                            <button class="page-btn" id="nextPage">›</button>
+                        </div>
+                        
+                        <div class="table-info">
+                            Showing 1-10 of 100 transactions
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Insights Panel -->
+            <section class="insights-section">
+                <div class="insights-card">
+                    <div class="insights-header">
+                        <h3 class="insights-title">AI Insights</h3>
+                        <span class="insights-badge">New</span>
+                    </div>
+                    
+                    <div class="insights-content">
+                        <div class="insight-item">
+                            <div class="insight-icon">🎯</div>
+                            <div class="insight-text">
+                                <h4>Revenue Growth Opportunity</h4>
+                                <p>Your mobile traffic has increased 25% but conversion is 15% lower than desktop. Consider optimizing mobile checkout flow.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-item">
+                            <div class="insight-icon">⚠️</div>
+                            <div class="insight-text">
+                                <h4>Inventory Alert</h4>
+                                <p>Product "Wireless Headphones" is running low (12 units left) and has high demand. Consider restocking soon.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="insight-item">
+                            <div class="insight-icon">📈</div>
+                            <div class="insight-text">
+                                <h4>Seasonal Trend</h4>
+                                <p>Sales typically increase 30% in the next 2 weeks based on historical data. Prepare marketing campaigns.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Loading dashboard data...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

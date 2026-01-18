@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster - Modern Todo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="app-title">
+                <span class="icon">✅</span>
+                TaskMaster
+            </h1>
+            <p class="app-subtitle">Stay organized, stay productive</p>
+        </header>
+
+        <main class="main">
+            <div class="add-task-section">
+                <form class="add-task-form" id="addTaskForm">
+                    <input 
+                        type="text" 
+                        id="taskInput" 
+                        placeholder="What needs to be done?" 
+                        class="task-input"
+                        required
+                    >
+                    <button type="submit" class="add-btn">
+                        <span class="add-icon">+</span>
+                        Add Task
+                    </button>
+                </form>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="active">Active</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                </div>
+                <div class="task-count">
+                    <span id="taskCount">0</span> tasks remaining
+                </div>
+            </div>
+
+            <div class="tasks-section">
+                <ul class="task-list" id="taskList">
+                    <!-- Tasks will be dynamically added here -->
+                </ul>
+                
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon">📝</div>
+                    <h3>No tasks yet</h3>
+                    <p>Add a task above to get started!</p>
+                </div>
+            </div>
+
+            <div class="actions-section">
+                <button class="clear-btn" id="clearCompleted">
+                    Clear Completed
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

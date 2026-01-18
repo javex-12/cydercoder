@@ -1,0 +1,392 @@
+/* CalcPro - Advanced Calculator Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #3b82f6;
+    --primary-dark: #1d4ed8;
+    --secondary-color: #6366f1;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --bg-dark: #1e293b;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --text-white: #ffffff;
+    --border-color: #e2e8f0;
+    
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --border-radius: 0.75rem;
+    --border-radius-sm: 0.5rem;
+    --transition: all 0.2s ease;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 1rem;
+    color: var(--text-primary);
+}
+
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.calculator {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+/* Header */
+.calculator-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-white);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.calc-icon {
+    font-size: 1.75rem;
+}
+
+.mode-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-sm);
+    padding: 0.25rem;
+}
+
+.mode-btn {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.mode-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.mode-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Display Section */
+.display-section {
+    background: var(--bg-secondary);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.history-display {
+    min-height: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-align: right;
+    margin-bottom: 0.5rem;
+    font-family: 'Courier New', monospace;
+}
+
+.main-display {
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-align: right;
+    color: var(--text-primary);
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+}
+
+/* Buttons Section */
+.buttons-section {
+    padding: 1rem;
+}
+
+.button-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.basic-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.scientific-grid {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.hidden {
+    display: none;
+}
+
+.btn {
+    height: 60px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn-number {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-number:hover {
+    background: #e2e8f0;
+    border-color: var(--primary-color);
+}
+
+.btn-operator {
+    background: var(--primary-color);
+    color: var(--text-white);
+}
+
+.btn-operator:hover {
+    background: var(--primary-dark);
+}
+
+.btn-function {
+    background: var(--bg-dark);
+    color: var(--text-white);
+}
+
+.btn-function:hover {
+    background: #334155;
+}
+
+.btn-equals {
+    background: var(--success-color);
+    color: var(--text-white);
+}
+
+.btn-equals:hover {
+    background: #059669;
+}
+
+.btn-scientific {
+    background: var(--secondary-color);
+    color: var(--text-white);
+    font-size: 0.9rem;
+}
+
+.btn-scientific:hover {
+    background: #4f46e5;
+}
+
+/* History Section */
+.history-section {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.history-header h3 {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.clear-history-btn {
+    padding: 0.25rem 0.75rem;
+    background: var(--danger-color);
+    color: var(--text-white);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.875rem;
+}
+
+.clear-history-btn:hover {
+    background: #dc2626;
+}
+
+.history-list {
+    padding: 0.5rem 1rem 1rem;
+}
+
+.history-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 1rem;
+}
+
+.history-item {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+}
+
+.history-item:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary-color);
+}
+
+.history-expression {
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.history-result {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Error State */
+.error {
+    color: var(--danger-color) !important;
+}
+
+/* Animations */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 0.2s ease-in-out;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    body {
+        padding: 0.5rem;
+    }
+    
+    .calculator {
+        border-radius: 0;
+    }
+    
+    .calculator-header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .app-title {
+        font-size: 1.25rem;
+    }
+    
+    .display-section {
+        padding: 1rem;
+    }
+    
+    .main-display {
+        font-size: 2rem;
+    }
+    
+    .buttons-section {
+        padding: 0.75rem;
+    }
+    
+    .btn {
+        height: 50px;
+        font-size: 1rem;
+    }
+    
+    .btn-scientific {
+        font-size: 0.8rem;
+    }
+    
+    .scientific-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .basic-grid {
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-display {
+        font-size: 1.75rem;
+    }
+    
+    .btn {
+        height: 45px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-scientific {
+        font-size: 0.7rem;
+    }
+    
+    .scientific-grid {
+        gap: 0.4rem;
+    }
+    
+    .basic-grid {
+        gap: 0.4rem;
+    }
+}

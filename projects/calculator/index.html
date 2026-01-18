@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalcPro - Advanced Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="calculator">
+            <header class="calculator-header">
+                <h1 class="app-title">
+                    <span class="calc-icon">🧮</span>
+                    CalcPro
+                </h1>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" data-mode="basic">Basic</button>
+                    <button class="mode-btn" data-mode="scientific">Scientific</button>
+                </div>
+            </header>
+
+            <div class="display-section">
+                <div class="history-display" id="historyDisplay"></div>
+                <div class="main-display" id="mainDisplay">0</div>
+            </div>
+
+            <div class="buttons-section">
+                <!-- Basic Calculator Buttons -->
+                <div class="button-grid basic-grid" id="basicGrid">
+                    <button class="btn btn-function" onclick="calculator.clear()">C</button>
+                    <button class="btn btn-function" onclick="calculator.clearEntry()">CE</button>
+                    <button class="btn btn-function" onclick="calculator.backspace()">⌫</button>
+                    <button class="btn btn-operator" onclick="calculator.inputOperator('/')">÷</button>
+                    
+                    <button class="btn btn-number" onclick="calculator.inputNumber('7')">7</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('8')">8</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('9')">9</button>
+                    <button class="btn btn-operator" onclick="calculator.inputOperator('*')">×</button>
+                    
+                    <button class="btn btn-number" onclick="calculator.inputNumber('4')">4</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('5')">5</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('6')">6</button>
+                    <button class="btn btn-operator" onclick="calculator.inputOperator('-')">−</button>
+                    
+                    <button class="btn btn-number" onclick="calculator.inputNumber('1')">1</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('2')">2</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('3')">3</button>
+                    <button class="btn btn-operator" onclick="calculator.inputOperator('+')">+</button>
+                    
+                    <button class="btn btn-function" onclick="calculator.toggleSign()">±</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('0')">0</button>
+                    <button class="btn btn-function" onclick="calculator.inputDecimal()">.</button>
+                    <button class="btn btn-equals" onclick="calculator.calculate()">=</button>
+                </div>
+
+                <!-- Scientific Calculator Buttons -->
+                <div class="button-grid scientific-grid hidden" id="scientificGrid">
+                    <button class="btn btn-function" onclick="calculator.clear()">C</button>
+                    <button class="btn btn-function" onclick="calculator.clearEntry()">CE</button>
+                    <button class="btn btn-function" onclick="calculator.backspace()">⌫</button>
+                    <button class="btn btn-operator" onclick="calculator.inputOperator('/')">÷</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputFunction('sqrt')">√</button>
+                    
+                    <button class="btn btn-scientific" onclick="calculator.inputFunction('sin')">sin</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputFunction('cos')">cos</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputFunction('tan')">tan</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputFunction('log')">log</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputFunction('ln')">ln</button>
+                    
+                    <button class="btn btn-number" onclick="calculator.inputNumber('7')">7</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('8')">8</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('9')">9</button>
+                    <button class="btn btn-operator" onclick="calculator.inputOperator('*')">×</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputOperator('^')">x²</button>
+                    
+                    <button class="btn btn-number" onclick="calculator.inputNumber('4')">4</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('5')">5</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('6')">6</button>
+                    <button class="btn btn-operator" onclick="calculator.inputOperator('-')">−</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputConstant('pi')">π</button>
+                    
+                    <button class="btn btn-number" onclick="calculator.inputNumber('1')">1</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('2')">2</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('3')">3</button>
+                    <button class="btn btn-operator" onclick="calculator.inputOperator('+')">+</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputConstant('e')">e</button>
+                    
+                    <button class="btn btn-function" onclick="calculator.toggleSign()">±</button>
+                    <button class="btn btn-number" onclick="calculator.inputNumber('0')">0</button>
+                    <button class="btn btn-function" onclick="calculator.inputDecimal()">.</button>
+                    <button class="btn btn-equals" onclick="calculator.calculate()">=</button>
+                    <button class="btn btn-scientific" onclick="calculator.inputFunction('factorial')">!</button>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <div class="history-header">
+                    <h3>History</h3>
+                    <button class="clear-history-btn" onclick="calculator.clearHistory()">Clear</button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="history-empty">No calculations yet</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
