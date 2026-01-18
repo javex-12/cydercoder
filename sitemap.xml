@@ -7,19 +7,19 @@
 
     <!-- Homepage -->
     <url>
-        <loc>https://cydercoder.netlify.app/</loc>
+        <loc>https://cydercoder.vercel.app/</loc>
         <lastmod>2026-01-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
         <image:image>
-            <image:loc>https://cydercoder.netlify.app/logo.jpeg</image:loc>
+            <image:loc>https://cydercoder.vercel.app/logo.jpeg</image:loc>
             <image:title>CyderCoder Logo - Michael Dosunmu</image:title>
         </image:image>
     </url>
 
     <!-- About Page -->
     <url>
-        <loc>https://cydercoder.netlify.app/about.html</loc>
+        <loc>https://cydercoder.vercel.app/about.html</loc>
         <lastmod>2026-01-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
@@ -27,7 +27,7 @@
 
     <!-- Portfolio Page -->
     <url>
-        <loc>https://cydercoder.netlify.app/portfolio.html</loc>
+        <loc>https://cydercoder.vercel.app/portfolio.html</loc>
         <lastmod>2026-01-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
@@ -35,7 +35,7 @@
 
     <!-- Contact Page -->
     <url>
-        <loc>https://cydercoder.netlify.app/contact.html</loc>
+        <loc>https://cydercoder.vercel.app/contact.html</loc>
         <lastmod>2026-01-18</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
