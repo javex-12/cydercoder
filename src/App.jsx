@@ -310,7 +310,7 @@ const App = () => {
         <section id="home" className="h-screen flex items-center justify-center px-6 relative overflow-hidden bg-brandCream">
           <canvas ref={heroCanvasRef} className="absolute inset-0 z-0 opacity-100" />
           <div className="max-w-7xl mx-auto w-full relative z-10 text-center md:text-left pointer-events-none">
-             <div className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-bold rounded-full mb-8 uppercase tracking-[0.4em] reveal-genesis opacity-0">Lagos, Nigeria ðŸ‡³ðŸ‡¬</div>
+             <div className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-bold rounded-full mb-8 uppercase tracking-[0.4em] reveal-genesis opacity-0">Lagos, Nigeria &#x1F1F3;&#x1F1EC;</div>
              <h1 className="text-5xl sm:text-7xl lg:text-8xl xl:text-[9rem] font-black mb-8 leading-[0.85] tracking-tighter text-brandDark reveal-genesis opacity-0">DOSUMU <br/> <span className="text-primary">MICHAEL.</span></h1>
              <p className="text-base sm:text-lg xl:text-xl text-brandDark/50 max-w-2xl mb-12 leading-relaxed font-medium reveal-genesis opacity-0">Designing <span className="text-brandDark">High-Fidelity</span> digital experiences that blend neural intelligence with modern aesthetics.</p>
              <div className="flex flex-col sm:flex-row gap-5 pointer-events-auto reveal-genesis opacity-0">
@@ -321,12 +321,12 @@ const App = () => {
         </section>
 
         <div className="py-8 bg-primary overflow-hidden whitespace-nowrap border-y-2 border-brandDark relative z-20">
-           <div className="animate-marquee inline-block"><div className="flex whitespace-nowrap">{[...Array(10)].map((_, i) => (<span key={i} className="text-2xl md:text-4xl xl:text-5xl font-black text-brandCream uppercase mx-8 tracking-tighter">Creative Engineering â€¢ Neural Intelligence â€¢ WebGL Performance â€¢ Scalable Architecture â€¢ </span>))}</div></div>
+           <div className="animate-marquee inline-block"><div className="flex whitespace-nowrap">{[...Array(10)].map((_, i) => (<span key={i} className="text-2xl md:text-4xl xl:text-5xl font-black text-brandCream uppercase mx-8 tracking-tighter">Creative Engineering &bull; Neural Intelligence &bull; WebGL Performance &bull; Scalable Architecture &bull; </span>))}</div></div>
         </div>
 
         <section id="skills" className="py-32 md:py-48 px-6 md:px-20 bg-brandDark text-brandCream relative overflow-hidden">
            <div className="max-w-7xl mx-auto">
-              <h2 className="text-sm font-bold tracking-[0.6em] text-primary uppercase mb-20">â€” Technical Arsenal</h2>
+              <h2 className="text-sm font-bold tracking-[0.6em] text-primary uppercase mb-20">&mdash; Technical Arsenal</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
                  {skillCategories.map((cat, i) => (
                     <div key={i} className="group">
@@ -392,24 +392,24 @@ const App = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl px-4">
                  <div onClick={() => setIsModalOpen(true)} className="group cursor-pointer bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500">
                     <p className="text-primary text-sm font-bold tracking-[0.3em] uppercase mb-4">Quick Pulse</p>
-                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">WhatsApp â†—</span>
+                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">WhatsApp &#x2197;</span>
                     <p className="mt-6 text-brandCream/40 text-base">+234 808 574 1430</p>
                  </div>
                  <a href="mailto:michaeldosunmu22@gmail.com" className="group cursor-pointer bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500 no-underline">
                     <p className="text-primary text-sm font-bold tracking-[0.3em] uppercase mb-4">Official Channel</p>
-                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">Email â†—</span>
+                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">Email &#x2197;</span>
                     <p className="mt-6 text-brandCream/40 text-base">michaeldosunmu22@gmail.com</p>
                  </a>
                  <a href="https://github.com/javex-12" target="_blank" rel="noopener noreferrer" className="group cursor-pointer bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500 no-underline">
                     <p className="text-primary text-sm font-bold tracking-[0.3em] uppercase mb-4">Open Source</p>
-                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">GitHub â†—</span>
+                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">GitHub &#x2197;</span>
                     <p className="mt-6 text-brandCream/40 text-base">github.com/javex-12</p>
                  </a>
               </div>
            </div>
-                       <div className="px-6 md:px-20 py-20 border-t border-white/5 relative z-10">
+            <div className="px-6 md:px-20 py-20 border-t border-white/5 relative z-10">
                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
-                  <div className="flex flex-col items-center md:items-start"><span className="text-2xl font-black tracking-tighter text-brandCream mb-2">CYDER<span className="text-primary">CODER</span></span><span className="text-[10px] font-bold tracking-[0.4em] uppercase text-brandCream/20">© 2026 DOSUMU MICHAEL</span></div>
+                  <div className="flex flex-col items-center md:items-start"><span className="text-2xl font-black tracking-tighter text-brandCream mb-2">CYDER<span className="text-primary">CODER</span></span><span className="text-[10px] font-bold tracking-[0.4em] uppercase text-brandCream/20">&copy; 2026 DOSUMU MICHAEL</span></div>
                   <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-primary text-center">Based in Lagos State, NG</div>
                   <div className="flex items-center gap-6">
                     <a href="https://github.com/javex-12" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-brandCream/30 hover:text-primary transition-colors duration-300">
@@ -428,4 +428,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default App;
