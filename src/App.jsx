@@ -389,21 +389,21 @@ const App = () => {
         <section id="contact" className="min-h-screen bg-brandDark flex flex-col relative overflow-hidden">
            <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10 py-32">
               <h2 className="text-[10vw] md:text-[6rem] xl:text-[8rem] font-black text-brandCream leading-[0.85] tracking-tighter mb-16 text-center">LET'S BUILD <br/> THE <span className="text-primary italic">FUTURE.</span></h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl px-4">
-                 <div onClick={() => setIsModalOpen(true)} className="group cursor-pointer bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500">
-                    <p className="text-primary text-sm font-bold tracking-[0.3em] uppercase mb-4">Quick Pulse</p>
-                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">WhatsApp &#x2197;</span>
-                    <p className="mt-6 text-brandCream/40 text-base">+234 808 574 1430</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-6xl px-4">
+                 <div onClick={() => setIsModalOpen(true)} className="group cursor-pointer bg-white/5 p-8 lg:p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500">
+                    <p className="text-primary text-xs lg:text-sm font-bold tracking-[0.3em] uppercase mb-4">Quick Pulse</p>
+                    <span className="text-3xl lg:text-4xl xl:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">WhatsApp &#x2197;</span>
+                    <p className="mt-6 text-brandCream/40 text-sm lg:text-base">+234 808 574 1430</p>
                  </div>
-                 <a href="mailto:michaeldosunmu22@gmail.com" className="group cursor-pointer bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500 no-underline">
-                    <p className="text-primary text-sm font-bold tracking-[0.3em] uppercase mb-4">Official Channel</p>
-                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">Email &#x2197;</span>
-                    <p className="mt-6 text-brandCream/40 text-base">michaeldosunmu22@gmail.com</p>
+                 <a href="mailto:michaeldosunmu22@gmail.com" className="group cursor-pointer bg-white/5 p-8 lg:p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500 no-underline">
+                    <p className="text-primary text-xs lg:text-sm font-bold tracking-[0.3em] uppercase mb-4">Official Channel</p>
+                    <span className="text-3xl lg:text-4xl xl:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">Email &#x2197;</span>
+                    <p className="mt-6 text-brandCream/40 text-sm lg:text-base break-all">michaeldosunmu22@gmail.com</p>
                  </a>
-                 <a href="https://github.com/javex-12" target="_blank" rel="noopener noreferrer" className="group cursor-pointer bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500 no-underline">
-                    <p className="text-primary text-sm font-bold tracking-[0.3em] uppercase mb-4">Open Source</p>
-                    <span className="text-3xl md:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">GitHub &#x2197;</span>
-                    <p className="mt-6 text-brandCream/40 text-base">github.com/javex-12</p>
+                 <a href="https://github.com/javex-12" target="_blank" rel="noopener noreferrer" className="group cursor-pointer bg-white/5 p-8 lg:p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500 no-underline md:col-span-2 lg:col-span-1">
+                    <p className="text-primary text-xs lg:text-sm font-bold tracking-[0.3em] uppercase mb-4">Open Source</p>
+                    <span className="text-3xl lg:text-4xl xl:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">GitHub &#x2197;</span>
+                    <p className="mt-6 text-brandCream/40 text-sm lg:text-base break-all">github.com/javex-12</p>
                  </a>
               </div>
            </div>
