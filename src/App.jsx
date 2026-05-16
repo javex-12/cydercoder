@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
@@ -311,8 +311,8 @@ const App = () => {
           <canvas ref={heroCanvasRef} className="absolute inset-0 z-0 opacity-100" />
           <div className="max-w-7xl mx-auto w-full relative z-10 text-center md:text-left pointer-events-none">
              <div className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-bold rounded-full mb-8 uppercase tracking-[0.4em] reveal-genesis opacity-0">Lagos, Nigeria ðŸ‡³ðŸ‡¬</div>
-             <h1 className="text-6xl md:text-[11rem] font-black mb-8 leading-[0.85] tracking-tighter text-brandDark reveal-genesis opacity-0">DOSUMU <br/> <span className="text-primary">MICHAEL.</span></h1>
-             <p className="text-lg md:text-2xl text-brandDark/50 max-w-3xl mb-12 leading-relaxed font-medium reveal-genesis opacity-0">Designing <span className="text-brandDark">High-Fidelity</span> digital experiences that blend neural intelligence with modern aesthetics.</p>
+             <h1 className="text-5xl sm:text-7xl lg:text-8xl xl:text-[9rem] font-black mb-8 leading-[0.85] tracking-tighter text-brandDark reveal-genesis opacity-0">DOSUMU <br/> <span className="text-primary">MICHAEL.</span></h1>
+             <p className="text-base sm:text-lg xl:text-xl text-brandDark/50 max-w-2xl mb-12 leading-relaxed font-medium reveal-genesis opacity-0">Designing <span className="text-brandDark">High-Fidelity</span> digital experiences that blend neural intelligence with modern aesthetics.</p>
              <div className="flex flex-col sm:flex-row gap-5 pointer-events-auto reveal-genesis opacity-0">
                 <a href="#projects" className="px-10 py-5 bg-brandDark text-brandCream font-bold rounded-full text-base text-center hover:bg-primary transition-colors duration-500 no-underline">Selected Works</a>
                 <button onClick={() => setIsModalOpen(true)} className="px-10 py-5 border-2 border-brandDark/10 text-brandDark font-bold rounded-full text-base text-center hover:border-primary transition-colors duration-500">Let's Talk</button>
@@ -321,7 +321,7 @@ const App = () => {
         </section>
 
         <div className="py-8 bg-primary overflow-hidden whitespace-nowrap border-y-2 border-brandDark relative z-20">
-           <div className="animate-marquee inline-block"><div className="flex whitespace-nowrap">{[...Array(10)].map((_, i) => (<span key={i} className="text-3xl md:text-7xl font-black text-brandCream uppercase mx-10 tracking-tighter">Creative Engineering â€¢ Neural Intelligence â€¢ WebGL Performance â€¢ Scalable Architecture â€¢ </span>))}</div></div>
+           <div className="animate-marquee inline-block"><div className="flex whitespace-nowrap">{[...Array(10)].map((_, i) => (<span key={i} className="text-2xl md:text-4xl xl:text-5xl font-black text-brandCream uppercase mx-8 tracking-tighter">Creative Engineering â€¢ Neural Intelligence â€¢ WebGL Performance â€¢ Scalable Architecture â€¢ </span>))}</div></div>
         </div>
 
         <section id="skills" className="py-32 md:py-48 px-6 md:px-20 bg-brandDark text-brandCream relative overflow-hidden">
@@ -347,12 +347,12 @@ const App = () => {
         <section id="projects" className="py-32 md:py-48 bg-brandCream px-6 md:px-20">
            <div className="max-w-7xl mx-auto">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 md:mb-32 gap-10">
-                 <h2 className="text-6xl md:text-[10rem] font-black leading-none tracking-tighter scramble-text" data-value="PROJECTS">PROJECTS</h2>
+                 <h2 className="text-5xl sm:text-7xl lg:text-8xl xl:text-[8rem] font-black leading-none tracking-tighter scramble-text" data-value="PROJECTS">PROJECTS</h2>
                  <p className="max-w-md text-brandDark/40 font-medium text-base md:text-lg text-left">A curated selection of experiments in interaction and data storytelling.</p>
               </div>
-              <div className="space-y-[20vh] md:space-y-[30vh]">
+              <div className="space-y-[12vh] md:space-y-[16vh] xl:space-y-[20vh]">
                  {projectData.map((proj, i) => (
-                    <div key={i} className="sticky top-20 min-h-[70vh] md:h-[85vh] w-full bg-white rounded-[2.5rem] md:rounded-[3rem] shadow-xl border border-brandDark/5 p-6 md:p-12 flex flex-col md:flex-row gap-8 md:gap-12 group overflow-hidden transition-all duration-500">
+                    <div key={i} className="sticky top-20 min-h-[65vh] md:h-[80vh] xl:h-[75vh] w-full bg-white rounded-[2.5rem] md:rounded-[3rem] shadow-xl border border-brandDark/5 p-6 md:p-10 xl:p-12 flex flex-col md:flex-row gap-6 md:gap-10 group overflow-hidden transition-all duration-500">
                        <div className="w-full md:w-1/2 h-[40vh] md:h-full bg-[#f8f8f8] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden relative flex flex-col border border-brandDark/5 shadow-inner order-2 md:order-1">
                           <div className="browser-frame py-2 md:py-3 relative flex items-center bg-[#eee] px-4">
                              <div className="flex gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]" /><div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" /><div className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" /></div>
@@ -373,8 +373,8 @@ const App = () => {
                        </div>
                        <div className="w-full md:w-1/2 flex flex-col justify-center order-1 md:order-2 px-2 text-left">
                           <div className="flex items-center gap-4 mb-4 md:mb-6"><span className="text-primary font-bold text-xs md:text-sm tracking-widest uppercase">{proj.type}</span>{proj.isPremium && <span className="px-3 py-1 bg-primary text-white text-[8px] font-black rounded-full uppercase">Featured</span>}</div>
-                          <h3 className="text-4xl md:text-6xl font-black mb-6 md:mb-8 leading-tight tracking-tighter">{proj.title}</h3>
-                          <p className="text-base md:text-lg text-brandDark/60 mb-8 md:mb-12 leading-relaxed font-medium">{proj.desc}</p>
+                          <h3 className="text-3xl md:text-4xl xl:text-5xl font-black mb-4 md:mb-6 leading-tight tracking-tighter">{proj.title}</h3>
+                          <p className="text-sm md:text-base xl:text-lg text-brandDark/60 mb-6 md:mb-10 leading-relaxed font-medium">{proj.desc}</p>
                           <div className="flex flex-wrap gap-2 md:gap-3">{proj.tags.map((tag, t) => (
                                <span key={t} className="px-4 py-1.5 md:px-6 md:py-2 bg-brandDark/5 border border-brandDark/10 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-wider">{tag}</span>
                              ))}
@@ -388,7 +388,7 @@ const App = () => {
 
         <section id="contact" className="min-h-screen bg-brandDark flex flex-col relative overflow-hidden">
            <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10 py-32">
-              <h2 className="text-[12vw] md:text-[10rem] font-black text-brandCream leading-[0.8] tracking-tighter mb-20 text-center">LET'S BUILD <br/> THE <span className="text-primary italic">FUTURE.</span></h2>
+              <h2 className="text-[10vw] md:text-[6rem] xl:text-[8rem] font-black text-brandCream leading-[0.85] tracking-tighter mb-16 text-center">LET'S BUILD <br/> THE <span className="text-primary italic">FUTURE.</span></h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl px-4">
                  <div onClick={() => setIsModalOpen(true)} className="group cursor-pointer bg-white/5 p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500">
                     <p className="text-primary text-sm font-bold tracking-[0.3em] uppercase mb-4">Quick Pulse</p>
