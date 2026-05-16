@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brandDark: #1A1A1A;
+  --brandCream: #FAFAF7;
+  --primary: #d67a5c;
+}
+
+body {
+  @apply bg-brandCream text-brandDark font-sans selection:bg-primary selection:text-white;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Custom Cursor Styles */
+.custom-cursor {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+.cursor-follower {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--primary);
+  border-radius: 50%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s ease-out;
+}
+
+/* Scroll Experience Styles */
+.horizontal-scroll-section {
+  width: 300vw;
+  display: flex;
+}
+
+.sticky-card {
+  @apply sticky top-20 h-[80vh] w-full bg-white rounded-[2rem] shadow-2xl p-12 mb-20;
+}
+
+/* Animation Utilities */
+.scramble-text {
+  display: inline-block;
+  white-space: pre;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.browser-dot {
+  @apply w-3 h-3 rounded-full;
+}
+
+.browser-frame {
+  @apply bg-[#f1f1f1] border-b border-gray-300 px-4 py-3 flex items-center gap-2 rounded-t-[1.5rem];
+}
+
+.browser-address {
+  @apply bg-white rounded-md px-4 py-1 text-[10px] text-gray-400 font-medium flex-1 mx-4 truncate;
+}
