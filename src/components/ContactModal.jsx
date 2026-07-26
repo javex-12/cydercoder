@@ -1,50 +1,76 @@
 import React, { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
 
 const ContactModal = ({ isOpen, onClose, onSend, initialMessage }) => {
-  const modalRef = useRef(null);
-  const contentRef = useRef(null);
   const [message, setMessage] = React.useState(initialMessage);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
-      gsap.to(modalRef.current, { opacity: 1, display: 'flex', duration: 0.3 });
-      gsap.fromTo(contentRef.current, 
-        { y: 50, opacity: 0, scale: 0.9 }, 
-        { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)" }
-      );
-    } else {
-      gsap.to(modalRef.current, { opacity: 0, display: 'none', duration: 0.3 });
+      setMessage(initialMessage);
+      requestAnimationFrame(() => textareaRef.current?.focus());
     }
-  }, [isOpen]);
+  }, [isOpen, initialMessage]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
 
   return (
-    <div ref={modalRef} className="fixed inset-0 z-[200] hidden items-center justify-center bg-brandDark/80 backdrop-blur-xl px-6">
-      <div ref={contentRef} className="bg-brandCream w-full max-w-xl rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-brandDark/5">
-        <div className="flex justify-between items-center mb-10">
-           <h3 className="text-3xl font-black tracking-tighter uppercase">Message Michael</h3>
-           <button onClick={onClose} className="p-4 hover:bg-brandDark/5 rounded-full transition-colors">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-           </button>
-        </div>
-        
-        <div className="mb-10">
-           <label className="block text-[10px] font-bold uppercase tracking-[0.3em] text-primary mb-4">Your Message</label>
-           <textarea 
-             value={message}
-             onChange={(e) => setMessage(e.target.value)}
-             className="w-full h-40 bg-brandDark/5 rounded-2xl p-6 text-lg font-medium border-none focus:ring-2 focus:ring-primary transition-all resize-none"
-             placeholder="Type your message here..."
-           />
+    <div
+      className="modal-backdrop fixed inset-0 z-[200] flex items-center justify-center bg-void/80 px-4 sm:px-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contact-modal-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="modal-panel w-full max-w-xl border-[3px] border-ink shadow-none relative">
+        <div className="absolute -top-px -left-px w-3 h-3 border-t-2 border-l-2 border-orange pointer-events-none" aria-hidden="true" />
+        <div className="absolute -top-px -right-px w-3 h-3 border-t-2 border-r-2 border-orange pointer-events-none" aria-hidden="true" />
+        <div className="absolute -bottom-px -left-px w-3 h-3 border-b-2 border-l-2 border-orange pointer-events-none" aria-hidden="true" />
+        <div className="absolute -bottom-px -right-px w-3 h-3 border-b-2 border-r-2 border-orange pointer-events-none" aria-hidden="true" />
+
+        <div className="flex justify-between items-center gap-4 px-5 sm:px-8 py-4 border-b-[3px] border-ink/25">
+          <h3 id="contact-modal-title" className="font-display font-black text-2xl sm:text-3xl uppercase leading-none">
+            Say hello
+          </h3>
+          <button type="button" onClick={onClose} className="btn-stamp !py-2 !px-3 !text-[11px]" aria-label="Close">
+            Close
+          </button>
         </div>
 
-        <button 
-          onClick={() => onSend(message)}
-          className="w-full py-6 bg-brandDark text-brandCream rounded-full font-black uppercase tracking-widest hover:bg-primary transition-colors duration-500 flex items-center justify-center gap-4"
-        >
-          Send Message
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-        </button>
+        <div className="px-5 sm:px-8 py-6 sm:py-8">
+          <label htmlFor="contact-message" className="block font-mono text-[11px] uppercase tracking-[0.08em] text-blue font-semibold mb-3">
+            Your message
+          </label>
+          <textarea
+            id="contact-message"
+            ref={textareaRef}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full h-40 bg-paper border-2 border-ink/30 p-4 text-base font-medium font-body text-ink resize-none focus:outline-none focus:border-blue"
+            placeholder="What are you working on?"
+          />
+
+          <button
+            type="button"
+            onClick={() => onSend(message)}
+            className="btn-stamp w-full justify-center mt-6 !py-4"
+          >
+            Send on WhatsApp →
+          </button>
+          <p className="font-mono text-[10px] text-ink-muted mt-3 text-center normal-case tracking-normal">
+            Opens WhatsApp with your draft · +234 808 574 1430
+          </p>
+        </div>
       </div>
     </div>
   );

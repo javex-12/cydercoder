@@ -1,431 +1,652 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as THREE from 'three';
+import React, { useState, useEffect } from 'react';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
-import BubbleMenu from './components/BubbleMenu/BubbleMenu';
 import ContactModal from './components/ContactModal';
+import AiShowcase from './components/AiShowcase';
+import StatsBar from './components/StatsBar';
+import HeroMotion from './components/HeroMotion';
+import { useScrollReveal } from './hooks/useScrollReveal';
 import './index.css';
 
-gsap.registerPlugin(ScrollTrigger);
+const skillCategories = [
+  {
+    title: 'Front-end & motion',
+    skills: ['React / Next.js', 'Three.js / WebGL', 'GSAP / Framer', 'TypeScript'],
+    desc: 'I build interfaces that feel smooth and intentional — the kind people enjoy using, not just looking at.',
+  },
+  {
+    title: 'AI & smart tools',
+    skills: ['Python / Rust', 'AI / NLP', 'GenAI Integration', 'Computer Vision'],
+    desc: 'I wire AI into real products so it actually helps people get things done, instead of sitting there as a gimmick.',
+  },
+  {
+    title: 'Solid foundations',
+    skills: ['Fintech PWAs', 'Cloud Infra', 'SQL / NoSQL', 'Real-time Systems'],
+    desc: 'I care about the boring stuff too — clean structure, reliable data, and apps that don’t fall over under pressure.',
+  },
+];
+
+const projectData = [
+  { id: '01', title: 'SwiftLink Pro', type: 'Commerce', desc: 'Turn WhatsApp chats into a proper online storefront in about a minute. Built for businesses that sell where their customers already are.', url: 'https://swiftlinkpro.vercel.app/', tags: ['Next.js', 'WhatsApp API', 'Commerce'], isPremium: true },
+  { id: '02', title: 'BioByte Pro', type: 'Education', desc: 'A WAEC Biology practice app with 120+ modules, progress tracking, and the kind of feedback students actually need before exam day.', url: 'https://biobyte.vercel.app/', tags: ['React', 'LMS', 'PWA'], isPremium: true },
+  { id: '03', title: 'Chaotic Shift', type: 'AI / Play', desc: 'A playful web app that pairs Google Gemini with physics-y UI — part experiment, part useful tool.', url: 'https://cyswitch.vercel.app/', tags: ['Gemini AI', 'Framer', 'React'], isPremium: true },
+  { id: '04', title: 'Naija Bot AI', type: 'AI assistant', desc: 'An AI chat buddy that gets Nigerian context — tone, slang, and local problems — not just generic English answers.', url: 'https://naija-bot.vercel.app/', tags: ['OpenAI', 'NLP', 'Vite'], isPremium: true },
+  { id: '05', title: 'Loading Systems', type: 'UI kit', desc: 'A set of polished loading animations and motion bits you can drop into serious products without looking cheap.', url: 'https://loading-screen-1.vercel.app/', tags: ['GSAP', 'SVG', 'Motion'], isPremium: true },
+  { id: '06', title: 'Cydemy', type: 'Education', desc: 'A learning platform shaped for engineering and design courses — less clutter, more focus on the work.', url: 'https://cydemy.vercel.app/', tags: ['Next.js', 'LMS', 'Tailwind'], isPremium: true },
+  { id: '07', title: 'Adex Concerns', type: 'Business', desc: 'A clean company site and ops showcase for a professional services brand. Straight, credible, no fluff.', url: 'https://adexconcerns.vercel.app/', tags: ['Business', 'React', 'Corporate'], isPremium: true },
+  { id: '08', title: 'AjoSafe', type: 'Fintech', desc: 'Digital thrift (Ajo) circles with automatic cycles, live sync, and security you’d actually trust with money.', url: 'https://ajosafe.vercel.app/', tags: ['PWA', 'Supabase', 'Fintech'], isPremium: false },
+  { id: '09', title: 'CySolfa', type: 'Music', desc: 'Learn Tonic Solfa with interactive practice — for choirs, students, and anyone who hears music better than they read it.', url: 'https://cysolfa.vercel.app/', tags: ['Audio API', 'React', 'Education'], isPremium: false },
+  { id: '10', title: 'Edumati', type: 'Resources', desc: 'A simple hub for school materials — easy to browse, easy to manage when the file pile gets out of hand.', url: 'https://edumati.vercel.app/', tags: ['Resources', 'Vite', 'Dashboard'], isPremium: false },
+];
+
+const metaCards = [
+  { k: 'I work with', v: 'TypeScript, React, AI' },
+  { k: 'I care about', v: 'Tools, fintech, education' },
+  { k: 'I live in', v: 'Lagos · UTC+1' },
+];
+
+const navItems = [
+  { label: 'About', href: '#about' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'AI', href: '#ai' },
+  { label: 'Work', href: '#projects' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'Contact', href: '#contact' },
+];
+
+const faqItems = [
+  {
+    q: 'Who is Dosumu Michael (CyderCoder)?',
+    a: 'Dosumu Michael, known as CyderCoder, is a full-stack developer and creative engineer based in Lagos, Nigeria. He builds React and Next.js applications, Three.js/WebGL experiences, AI-powered products, and fintech progressive web apps.',
+  },
+  {
+    q: 'What technologies does CyderCoder specialize in?',
+    a: 'Core stack includes React, Next.js, TypeScript, Three.js, WebGL, GSAP, Framer Motion, Node.js, Python, Rust, Supabase, and AI/LLM integrations for real product features.',
+  },
+  {
+    q: 'Is Dosumu Michael available for hire?',
+    a: 'Yes. Open to freelance, contract, and collaboration work. Reach out via WhatsApp (+234 808 574 1430) or email michaeldosunmu22@gmail.com.',
+  },
+  {
+    q: 'Where is CyderCoder based?',
+    a: 'Lagos, Nigeria (UTC+1), available for remote work worldwide.',
+  },
+  {
+    q: 'What kinds of products has CyderCoder shipped?',
+    a: 'Live products include SwiftLink Pro (WhatsApp commerce), BioByte Pro (WAEC Biology practice), AjoSafe (digital thrift/fintech PWA), Naija Bot AI, Cydemy, and more — over 10 production projects.',
+  },
+  {
+    q: 'Does CyderCoder build AI features into products?',
+    a: 'Yes. He ships AI product features with practical UX — streaming chat, Nigerian-context assistants (Naija Bot AI), Gemini experiments (Chaotic Shift), and LLM integrations scoped to real jobs-to-be-done rather than gimmicks.',
+  },
+];
+
+const tickerWords = [
+  'React & Next.js',
+  'Fintech apps',
+  'AI products',
+  'Lagos, Nigeria',
+  'Clean code',
+  'Shipped on time',
+  'Human-friendly UI',
+];
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isDripComplete, setIsDripComplete] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeDemoIdx, setActiveDemoIdx] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
-  
-  const cursorRef = useRef(null);
-  const followerRef = useRef(null);
-  const mainRef = useRef(null);
-  const heroCanvasRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const skillCategories = [
-    { title: "Creative Engineering", skills: ["React/Next.js", "Three.js/WebGL", "GSAP/Framer", "TypeScript"], desc: "Architecting immersive, high-performance digital souls that bridge design and mathematics." },
-    { title: "Intelligence & Logic", skills: ["Python/Rust", "AI/NLP", "GenAI Integration", "Computer Vision"], desc: "Developing cognitive systems that perceive, reason, and adapt to complex user environments." },
-    { title: "Core Architecture", skills: ["Fintech PWAs", "Cloud Infra", "SQL/NoSQL", "Real-time Systems"], desc: "Building scalable, secure foundations for modern web applications and industrial solutions." }
-  ];
-
-  const projectData = [
-    { id: "01", title: "SwiftLink Pro", type: "FinTech / Commerce", desc: "A professional WhatsApp storefront turning business chats into high-conversion online catalogs in 60 seconds.", url: "https://swiftlinkpro.vercel.app/", tags: ["Next.js", "WhatsApp API", "Commerce"], isPremium: true },
-    { id: "02", title: "BioByte Pro", type: "EdTech / Health", desc: "The #1 WAEC Biology exam simulator featuring 120+ study modules, session metrics, and real-time mastery tracking.", url: "https://biobyte.vercel.app/", tags: ["React", "LMS", "PWA"], isPremium: true },
-    { id: "03", title: "Chaotic Shift", type: "AI / Interaction", desc: "A high-fidelity interactive PWA (CySwitch) integrating Google Gemini AI with physics-based UI elements.", url: "https://cyswitch.vercel.app/", tags: ["Gemini AI", "Framer", "React"], isPremium: true },
-    { id: "04", title: "Naija Bot AI", type: "AI Assistant", desc: "Cultural-aware AI assistant optimized for Nigerian linguistic nuances and localized problem-solving strategies.", url: "https://naija-bot.vercel.app/", tags: ["OpenAI", "NLP", "Vite"], isPremium: true },
-    { id: "05", title: "Loading Systems", type: "UI/UX Library", desc: "A premium collection of high-end motion design primitives and loading architectures for enterprise web apps.", url: "https://loading-screen-1.vercel.app/", tags: ["GSAP", "SVG", "Motion"], isPremium: true },
-    { id: "06", title: "Cydemy", type: "EdTech / Platform", desc: "Creative learning management system specifically designed for specialized engineering and design curricula.", url: "https://cydemy.vercel.app/", tags: ["Next.js", "LMS", "Tailwind"], isPremium: true },
-    { id: "07", title: "Adex Concerns", type: "Corporate Architecture", desc: "Enterprise-grade business management showcase and professional services digital ecosystem for industrial concerns.", url: "https://adexconcerns.vercel.app/", tags: ["Business", "React", "Corporate"], isPremium: true },
-    { id: "08", title: "AjoSafe Fintech", type: "FinTech / PWA", desc: "Digitalizing traditional savings (Ajo) with automated cycles, realtime Supabase sync, and military-grade security.", url: "https://ajosafe.vercel.app/", tags: ["PWA", "Supabase", "Fintech"], isPremium: false },
-    { id: "09", title: "CySolfa", type: "MusicTech / EdTech", desc: "Interactive music learning platform specializing in Tonic Solfa notation and real-time vocal training systems.", url: "https://cysolfa.vercel.app/", tags: ["Audio API", "React", "Education"], isPremium: false },
-    { id: "10", title: "Edumati", type: "Resource Hub", desc: "Scalable educational resource management system for academic institutions and high-volume learners.", url: "https://edumati.vercel.app/", tags: ["Resources", "Vite", "Dashboard"], isPremium: false }
-  ];
-
-  // â”€â”€ Use a ref to track drip state INSIDE the Three.js loop (avoids re-running the effect)
-  const isDripCompleteRef = useRef(false);
+  const siteReady = !isLoading;
+  useScrollReveal(siteReady);
 
   useEffect(() => {
-    if (isLoading || !heroCanvasRef.current) return;
-
-    // Reset on each mount
-    isDripCompleteRef.current = false;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 10;
-    const renderer = new THREE.WebGLRenderer({ canvas: heroCanvasRef.current, alpha: false, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.setClearColor(0xFAFAF7, 1);
-
-    // â”€â”€ MATERIALS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    const glassMat = new THREE.MeshPhysicalMaterial({
-      color: '#ffffff', metalness: 0.05, roughness: 0.0,
-      transmission: 1.0, thickness: 2.5, ior: 1.5,
-      transparent: true, clearcoat: 1.0, clearcoatRoughness: 0.0,
-      envMapIntensity: 1.2,
-    });
-    const dripMat = new THREE.MeshPhysicalMaterial({
-      color: '#c8f5e2', metalness: 0.0, roughness: 0.0,
-      transmission: 0.95, thickness: 1.2, ior: 1.4,
-      transparent: true, clearcoat: 1.0, clearcoatRoughness: 0.0,
-    });
-
-    // â”€â”€ MAIN SPHERE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    const geometry = new THREE.IcosahedronGeometry(4, 16);
-    const originalPositions = new Float32Array(geometry.attributes.position.array);
-    const sphere = new THREE.Mesh(geometry, glassMat);
-    sphere.scale.set(0, 0, 0);
-    scene.add(sphere);
-
-    // â”€â”€ TEARDROP DRIP (elongated sphere = teardrop silhouette) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    const dripGeo = new THREE.SphereGeometry(0.55, 32, 32);
-    const drip = new THREE.Mesh(dripGeo, dripMat);
-    drip.position.set(0, 14, 0);
-    drip.scale.set(0.55, 2.2, 0.55); // pointy at top, round at bottom
-    scene.add(drip);
-
-    // â”€â”€ SPLASH RINGS (hidden, revealed on impact) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    const ringMat = new THREE.MeshBasicMaterial({ color: '#10b981', transparent: true, opacity: 0.6, side: THREE.DoubleSide });
-    const rings = [0.6, 1.2, 2.0].map(r => {
-      const ring = new THREE.Mesh(new THREE.RingGeometry(r, r + 0.04, 64), ringMat.clone());
-      ring.rotation.x = -Math.PI / 2;
-      ring.position.y = 0;
-      ring.scale.set(0, 0, 0);
-      scene.add(ring);
-      return ring;
-    });
-
-    // â”€â”€ LIGHTING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    scene.add(new THREE.AmbientLight('#e2f5fd', 1.2));
-    const keyLight = new THREE.DirectionalLight('#ffffff', 3);
-    keyLight.position.set(6, 12, 8);
-    scene.add(keyLight);
-    const rimLight = new THREE.DirectionalLight('#a7f3d0', 2);
-    rimLight.position.set(-8, -4, -6);
-    scene.add(rimLight);
-    const warmFill = new THREE.PointLight('#fbbf24', 30, 80);
-    warmFill.position.set(-5, -6, 5);
-    scene.add(warmFill);
-    // Travelling light â€” follows the drop
-    const dripSpot = new THREE.PointLight('#a7f3d0', 50, 40);
-    dripSpot.position.set(0, 14, 4);
-    scene.add(dripSpot);
-    // Shockwave flash â€” fires on impact
-    const shockLight = new THREE.PointLight('#ffffff', 0, 60);
-    shockLight.position.set(0, 0, 6);
-    scene.add(shockLight);
-
-    // â”€â”€ MOUSE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    const mouse = new THREE.Vector2(0, 0);
-    const onMove = (e) => {
-      const x = e.touches ? e.touches[0].clientX : e.clientX;
-      const y = e.touches ? e.touches[0].clientY : e.clientY;
-      mouse.x = (x / window.innerWidth) * 2 - 1;
-      mouse.y = -(y / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('touchmove', onMove);
-
-    // â”€â”€ CINEMATIC SEQUENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    const tl = gsap.timeline({ delay: 0.3 });
-
-    // 1. FALL â€” fast expo acceleration, stretch increases as speed increases
-    tl.to(drip.position, {
-      y: 0,
-      duration: 0.55,
-      ease: "expo.in",
-      onUpdate: function () {
-        const p = this.progress();
-        // Aerodynamic: gets thinner and longer as it accelerates
-        drip.scale.set(0.55 - p * 0.25, 2.2 + p * 2.8, 0.55 - p * 0.25);
-        dripSpot.position.y = drip.position.y + 1.5;
-      },
-    })
-
-    // 2. SPLAT â€” violent horizontal squash (3 frames)
-    .to(drip.scale, {
-      x: 5, y: 0.05, z: 5,
-      duration: 0.08,
-      ease: "power4.out",
-    })
-
-    // 3. SHOCKWAVE FLASH
-    .to(shockLight, { intensity: 120, duration: 0.06, ease: "power4.out" }, "<")
-    .to(shockLight, { intensity: 0, duration: 0.4, ease: "power2.in" })
-
-    // 4. SPLASH RINGS â€” 3 rings expand outward with stagger
-    .call(() => {
-      rings.forEach((ring, i) => {
-        gsap.to(ring.scale, {
-          x: 1, y: 1, z: 1,
-          delay: i * 0.07,
-          duration: 0.01,
-        });
-        gsap.to(ring.scale, {
-          x: 4 + i * 1.5, y: 4 + i * 1.5, z: 4 + i * 1.5,
-          delay: i * 0.07 + 0.01,
-          duration: 0.55,
-          ease: "power2.out",
-        });
-        gsap.to(ring.material, {
-          opacity: 0,
-          delay: i * 0.07 + 0.15,
-          duration: 0.4,
-          ease: "power2.in",
-        });
-      });
-    }, null, "<0.02")
-
-    // 5. DRIP DISAPPEARS, SPHERE EXPLODES OUT
-    .call(() => {
-      scene.remove(drip);
-      scene.remove(dripSpot);
-    }, null, "<0.05")
-    .fromTo(sphere.scale,
-      { x: 0.05, y: 0.05, z: 0.05 },
-      { x: 1, y: 1, z: 1, duration: 1.1, ease: "elastic.out(1, 0.42)" },
-      "<0.03"
-    )
-    .call(() => {
-      // Trigger text reveal and start live morph â€” use ref, NOT setState, to avoid re-run
-      isDripCompleteRef.current = true;
-      setIsDripComplete(true);
-    }, null, "<0.1");
-
-    // â”€â”€ RENDER LOOP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    let rafId;
-    const animate = () => {
-      rafId = requestAnimationFrame(animate);
-      const t = Date.now() * 0.001;
-      if (isDripCompleteRef.current) {
-        const positions = geometry.attributes.position.array;
-        for (let i = 0; i < positions.length; i += 3) {
-          const x = originalPositions[i], y = originalPositions[i + 1], z = originalPositions[i + 2];
-          const noise =
-            Math.sin(x * 0.4 + t * 0.35) * 0.18 +
-            Math.cos(y * 0.4 + t * 0.28) * 0.18 +
-            Math.sin(z * 0.4 + t * 0.42) * 0.18;
-          positions[i]     = x + noise * (x / 5.5);
-          positions[i + 1] = y + noise * (y / 5.5);
-          positions[i + 2] = z + noise * (z / 5.5);
-        }
-        geometry.attributes.position.needsUpdate = true;
-        geometry.computeVertexNormals();
-        sphere.rotation.y += 0.0008;
-        gsap.to(sphere.rotation, { x: -mouse.y * 0.25, y: mouse.x * 0.25, duration: 3.5, ease: "power2.out" });
-        gsap.to(sphere.position, { x: mouse.x * 0.4, y: mouse.y * 0.4, duration: 3.5, ease: "power2.out" });
-      }
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      tl.kill();
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('touchmove', onMove);
-      window.removeEventListener('resize', handleResize);
-      renderer.dispose();
-    };
-  }, [isLoading]); // â† ONLY re-run when loading changes, NOT on isDripComplete
-
-  useEffect(() => {
-    if (isDripComplete) {
-      gsap.fromTo(".reveal-genesis", 
-        { y: 100, opacity: 0, skewY: 10 }, 
-        { y: 0, opacity: 1, skewY: 0, duration: 1.5, stagger: 0.2, ease: "expo.out" }
-      );
-    }
-  }, [isDripComplete]);
-
-  useEffect(() => {
-    const moveCursor = (e) => {
-      const { clientX, clientY } = e;
-      gsap.to(cursorRef.current, { x: clientX, y: clientY, duration: 0 });
-      gsap.to(followerRef.current, { x: clientX - 16, y: clientY - 16, duration: 0.3, ease: "power2.out" });
-    };
-    window.addEventListener('mousemove', moveCursor);
-    return () => window.removeEventListener('mousemove', moveCursor);
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (activeDemoIdx !== null || isModalOpen) {
+    if (activeDemoIdx !== null || isModalOpen || menuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-  }, [activeDemoIdx, isModalOpen]);
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeDemoIdx, isModalOpen, menuOpen]);
 
   const handleSendWhatsApp = (msg) => {
     window.open(`https://wa.me/2348085741430?text=${encodeURIComponent(msg)}`, '_blank');
     setIsModalOpen(false);
   };
 
+  const openDemo = (i) => setActiveDemoIdx(i);
+  const closeDemo = () => setActiveDemoIdx(null);
+
   return (
     <>
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
-      
+
+      <div className="crop tl" aria-hidden="true" />
+      <div className="crop tr" aria-hidden="true" />
+      <div className="crop bl" aria-hidden="true" />
+      <div className="crop br" aria-hidden="true" />
+
       {activeDemoIdx !== null && (
-        <div className="fixed inset-0 z-[1000] bg-white flex flex-col animate-in fade-in duration-500">
-           <div className="bg-[#f5f5f5] border-b border-gray-200 px-4 py-3 flex items-center gap-4">
-              <div className="flex gap-1.5"><div className="w-3 h-3 rounded-full bg-[#FF5F56]" /><div className="w-3 h-3 rounded-full bg-[#FFBD2E]" /><div className="w-3 h-3 rounded-full bg-[#27C93F]" /></div>
-              <div className="flex-1 bg-white rounded-lg py-1.5 px-4 text-[10px] text-gray-400 font-bold truncate flex items-center justify-between shadow-sm">
-                 <span className="hidden md:inline">{projectData[activeDemoIdx].url}</span>
-                 <span className="md:hidden text-primary">System Live Simulation</span>
-                 <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /><span className="uppercase text-[8px] tracking-widest text-green-600 font-black">Connected</span></div>
-              </div>
-              <div className="flex items-center gap-2">
-                 <a href={projectData[activeDemoIdx].url} target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-primary/10 text-primary rounded-full transition-colors flex items-center gap-2 px-3" title="Open Original"><span className="text-[8px] font-black uppercase hidden md:inline">Open Site</span><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></a>
-                 <button onClick={() => setReloadKey(k => k + 1)} className="p-2 hover:bg-gray-200 rounded-full transition-colors group"><svg className="w-4 h-4 text-gray-500 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg></button>
-                 <button onClick={() => setActiveDemoIdx(null)} className="px-6 py-2 bg-brandDark text-brandCream rounded-full font-black text-[10px] uppercase tracking-widest hover:bg-red-600 transition-colors shadow-lg">Exit</button>
-              </div>
-           </div>
-           <div className="bg-[#fff7ed] border-b border-[#ffedd5] px-4 py-2 flex items-center justify-center gap-2 text-[#9a3412] text-[9px] md:text-[10px] uppercase font-bold tracking-widest text-center shadow-inner">
-             <svg className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-             <span>Due to browser security policies, some projects may not load correctly here. Please use the 'Open Site' icon above for maximum efficiency.</span>
-           </div>
-           <div className="flex-1 relative bg-white"><iframe key={reloadKey} src={projectData[activeDemoIdx].url} className="w-full h-full border-none absolute inset-0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; camera; microphone; geolocation" loading="eager" /></div>
+        <div
+          className="demo-overlay fixed inset-0 z-[1000] bg-paper flex flex-col"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Project preview"
+        >
+          <div className="demo-chrome px-3 sm:px-4 py-3 flex items-center gap-3 sm:gap-4">
+            <div className="flex gap-1.5 shrink-0">
+              <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
+              <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+              <div className="w-3 h-3 rounded-full bg-[#27C93F]" />
+            </div>
+            <div className="flex-1 min-w-0 bg-paper border border-ink/15 py-1.5 px-3 font-mono text-[10px] text-ink-muted truncate flex items-center justify-between gap-2">
+              <span className="truncate hidden sm:inline">{projectData[activeDemoIdx].url}</span>
+              <span className="sm:hidden text-blue uppercase tracking-wider">Live preview</span>
+              <span className="flex items-center gap-1.5 shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="uppercase tracking-widest text-[8px] font-bold text-emerald-400">Live</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+              <a
+                href={projectData[activeDemoIdx].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-stamp !py-2 !px-3 !text-[10px] hidden sm:inline-flex"
+              >
+                Open site →
+              </a>
+              <button
+                type="button"
+                onClick={() => setReloadKey((k) => k + 1)}
+                className="p-2 border border-ink/20 hover:border-ink font-mono text-[10px] uppercase text-ink"
+                aria-label="Reload preview"
+              >
+                Reload
+              </button>
+              <button type="button" onClick={closeDemo} className="btn-stamp !py-2 !px-4 !text-[10px]">
+                Close
+              </button>
+            </div>
+          </div>
+          <div className="bg-orange/20 border-b border-ink/10 px-4 py-2 text-center font-mono text-[9px] sm:text-[10px] text-ink">
+            If this preview stays blank, the site blocked embeds — hit Open site instead.
+          </div>
+          <div className="flex-1 relative bg-paper">
+            <iframe
+              key={reloadKey}
+              src={projectData[activeDemoIdx].url}
+              className="w-full h-full border-none absolute inset-0"
+              title={projectData[activeDemoIdx].title}
+              allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              loading="eager"
+            />
+          </div>
         </div>
       )}
 
-      <ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSend={handleSendWhatsApp} initialMessage="Hello Michael, I saw your portfolio and I'd like to discuss a project with you." />
+      <ContactModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSend={handleSendWhatsApp}
+        initialMessage="Hey Michael — I saw your portfolio and wanted to chat about a project."
+      />
 
-      <div ref={mainRef} className={`bg-brandCream transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        <div ref={cursorRef} className="custom-cursor hidden md:block"></div>
-        <div ref={followerRef} className="cursor-follower hidden md:block"></div>
+      <div
+        className={`site-shell min-h-screen bg-paper transition-opacity duration-500 ${
+          isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        } ${siteReady ? 'site-ready' : ''}`}
+        style={{ backgroundColor: '#121110', color: '#F2EFE8' }}
+      >
+        <div className="max-w-doc mx-auto px-4 sm:px-6 md:px-8 pt-6 pb-16 md:pb-24">
+          <header className="site-header flex flex-wrap items-center justify-between gap-4 py-4 mb-8 md:mb-12 border-b-[3px] border-ink/25">
+            <a
+              href="#home"
+              className="brand-mark font-display font-black text-xl sm:text-2xl uppercase tracking-tight no-underline leading-none"
+              aria-label="CyderCoder — Dosumu Michael home"
+            >
+              Cyder<span className="brand-coder">Coder</span>
+            </a>
 
-        <BubbleMenu 
-          logo={<span className="font-black tracking-tighter text-xl">CYDER<span className="text-primary">CODER</span></span>}
-          items={[{ label: 'home', href: '#home', rotation: -5 }, { label: 'skills', href: '#skills', rotation: 8 }, { label: 'projects', href: '#projects', rotation: -3 }, { label: 'contact', href: '#contact', rotation: 10 }]}
-          useFixedPosition={true} menuBg="#FAFAF7" menuContentColor="#111"
-        />
+            <nav className="hidden md:flex items-center gap-6" aria-label="Primary">
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="nav-link font-mono text-[12px] uppercase tracking-[0.08em] text-ink-muted hover:text-blue no-underline"
+                >
+                  {item.label}
+                </a>
+              ))}
+              <button type="button" onClick={() => setIsModalOpen(true)} className="btn-stamp !py-2.5 !px-4 !text-[11px]">
+                Hire me →
+              </button>
+            </nav>
 
-        <section id="home" className="h-screen flex items-center justify-center px-6 relative overflow-hidden bg-brandCream">
-          <canvas ref={heroCanvasRef} className="absolute inset-0 z-0 opacity-100" />
-          <div className="max-w-7xl mx-auto w-full relative z-10 text-center md:text-left pointer-events-none">
-             <div className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-[10px] font-bold rounded-full mb-8 uppercase tracking-[0.4em] reveal-genesis opacity-0">Lagos, Nigeria &#x1F1F3;&#x1F1EC;</div>
-             <h1 className="text-5xl sm:text-7xl lg:text-8xl xl:text-[9rem] font-black mb-8 leading-[0.85] tracking-tighter text-brandDark reveal-genesis opacity-0">DOSUMU <br/> <span className="text-primary">MICHAEL.</span></h1>
-             <p className="text-base sm:text-lg xl:text-xl text-brandDark/50 max-w-2xl mb-12 leading-relaxed font-medium reveal-genesis opacity-0">Designing <span className="text-brandDark">High-Fidelity</span> digital experiences that blend neural intelligence with modern aesthetics.</p>
-             <div className="flex flex-col sm:flex-row gap-5 pointer-events-auto reveal-genesis opacity-0">
-                <a href="#projects" className="px-10 py-5 bg-brandDark text-brandCream font-bold rounded-full text-base text-center hover:bg-primary transition-colors duration-500 no-underline">Selected Works</a>
-                <button onClick={() => setIsModalOpen(true)} className="px-10 py-5 border-2 border-brandDark/10 text-brandDark font-bold rounded-full text-base text-center hover:border-primary transition-colors duration-500">Let's Talk</button>
-             </div>
-          </div>
-        </section>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className="md:hidden font-mono text-[11px] uppercase tracking-wider border-2 border-ink/40 px-3 py-2 text-ink"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav"
+            >
+              Menu
+            </button>
+          </header>
 
-        <div className="py-8 bg-primary overflow-hidden whitespace-nowrap border-y-2 border-brandDark relative z-20">
-           <div className="animate-marquee inline-block"><div className="flex whitespace-nowrap">{[...Array(10)].map((_, i) => (<span key={i} className="text-2xl md:text-4xl xl:text-5xl font-black text-brandCream uppercase mx-8 tracking-tighter">Creative Engineering &bull; Neural Intelligence &bull; WebGL Performance &bull; Scalable Architecture &bull; </span>))}</div></div>
-        </div>
-
-        <section id="skills" className="py-32 md:py-48 px-6 md:px-20 bg-brandDark text-brandCream relative overflow-hidden">
-           <div className="max-w-7xl mx-auto">
-              <h2 className="text-sm font-bold tracking-[0.6em] text-primary uppercase mb-20">&mdash; Technical Arsenal</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
-                 {skillCategories.map((cat, i) => (
-                    <div key={i} className="group">
-                       <div className="h-px w-full bg-brandCream/10 mb-10 group-hover:bg-primary transition-colors duration-700"></div>
-                       <h3 className="text-3xl md:text-4xl font-black mb-6 group-hover:text-primary transition-colors duration-500">{cat.title}</h3>
-                       <p className="text-brandCream/40 text-base md:text-lg mb-10 leading-relaxed">{cat.desc}</p>
-                       <ul className="space-y-4">
-                          {cat.skills.map((s, idx) => (
-                            <li key={idx} className="flex items-center gap-4 text-lg md:text-xl font-bold"><div className="w-2 h-2 rounded-full bg-primary"></div> {s}</li>
-                          ))}
-                       </ul>
-                    </div>
-                 ))}
+          {menuOpen && (
+            <div
+              id="mobile-nav"
+              className="mobile-menu fixed inset-0 z-[90] flex flex-col p-6 md:hidden"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation"
+            >
+              <div className="flex justify-between items-center border-b-[3px] border-ink/25 pb-4 mb-10">
+                <span className="font-display font-black text-xl uppercase">Menu</span>
+                <button type="button" onClick={() => setMenuOpen(false)} className="btn-stamp !py-2 !px-4 !text-[11px]">
+                  Close
+                </button>
               </div>
-           </div>
-        </section>
-
-        <section id="projects" className="py-32 md:py-48 bg-brandCream px-6 md:px-20">
-           <div className="max-w-7xl mx-auto">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 md:mb-32 gap-10">
-                 <h2 className="text-5xl sm:text-7xl lg:text-8xl xl:text-[8rem] font-black leading-none tracking-tighter scramble-text" data-value="PROJECTS">PROJECTS</h2>
-                 <p className="max-w-md text-brandDark/40 font-medium text-base md:text-lg text-left">A curated selection of experiments in interaction and data storytelling.</p>
-              </div>
-              <div className="space-y-[12vh] md:space-y-[16vh] xl:space-y-[20vh]">
-                 {projectData.map((proj, i) => (
-                    <div key={i} className="sticky top-20 min-h-[65vh] md:h-[80vh] xl:h-[75vh] w-full bg-white rounded-[2.5rem] md:rounded-[3rem] shadow-xl border border-brandDark/5 p-6 md:p-10 xl:p-12 flex flex-col md:flex-row gap-6 md:gap-10 group overflow-hidden transition-all duration-500">
-                       <div className="w-full md:w-1/2 h-[40vh] md:h-full bg-[#f8f8f8] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden relative flex flex-col border border-brandDark/5 shadow-inner order-2 md:order-1">
-                          <div className="browser-frame py-2 md:py-3 relative flex items-center bg-[#eee] px-4">
-                             <div className="flex gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-[#FF5F56]" /><div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" /><div className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" /></div>
-                             <div className="mx-4 flex-1 bg-white rounded py-0.5 px-3 text-[8px] text-gray-400 truncate">{proj.url}</div>
-                          </div>
-                          <div className="flex-1 bg-white relative overflow-hidden group/demo">
-                             <div className="w-full h-full transition-all duration-1000 grayscale blur-[2px] opacity-30">
-                                <iframe src={proj.url} className="w-full h-full border-none pointer-events-none" title={proj.title} loading="lazy" />
-                             </div>
-                             <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-brandDark/5 transition-opacity group-hover/demo:bg-brandDark/10 cursor-pointer" onPointerDown={() => setActiveDemoIdx(i)}>
-                                <div className="flex flex-col items-center animate-bounce">
-                                   <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center mb-5 shadow-2xl"><svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" /></svg></div>
-                                   <div className="bg-brandDark text-brandCream px-8 py-4 rounded-full font-black text-xs uppercase tracking-widest shadow-2xl">Launch Case</div>
-                                </div>
-                                <p className="mt-5 text-[9px] font-black text-brandDark uppercase tracking-[0.4em]">Interactive Simulation</p>
-                             </div>
-                          </div>
-                       </div>
-                       <div className="w-full md:w-1/2 flex flex-col justify-center order-1 md:order-2 px-2 text-left">
-                          <div className="flex items-center gap-4 mb-4 md:mb-6"><span className="text-primary font-bold text-xs md:text-sm tracking-widest uppercase">{proj.type}</span>{proj.isPremium && <span className="px-3 py-1 bg-primary text-white text-[8px] font-black rounded-full uppercase">Featured</span>}</div>
-                          <h3 className="text-3xl md:text-4xl xl:text-5xl font-black mb-4 md:mb-6 leading-tight tracking-tighter">{proj.title}</h3>
-                          <p className="text-sm md:text-base xl:text-lg text-brandDark/60 mb-6 md:mb-10 leading-relaxed font-medium">{proj.desc}</p>
-                          <div className="flex flex-wrap gap-2 md:gap-3">{proj.tags.map((tag, t) => (
-                               <span key={t} className="px-4 py-1.5 md:px-6 md:py-2 bg-brandDark/5 border border-brandDark/10 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-wider">{tag}</span>
-                             ))}
-                          </div>
-                       </div>
-                    </div>
-                 ))}
-              </div>
-           </div>
-        </section>
-
-        <section id="contact" className="min-h-screen bg-brandDark flex flex-col relative overflow-hidden">
-           <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10 py-32">
-              <h2 className="text-[10vw] md:text-[6rem] xl:text-[8rem] font-black text-brandCream leading-[0.85] tracking-tighter mb-16 text-center">LET'S BUILD <br/> THE <span className="text-primary italic">FUTURE.</span></h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-6xl px-4">
-                 <div onClick={() => setIsModalOpen(true)} className="group cursor-pointer bg-white/5 p-8 lg:p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500">
-                    <p className="text-primary text-xs lg:text-sm font-bold tracking-[0.3em] uppercase mb-4">Quick Pulse</p>
-                    <span className="text-3xl lg:text-4xl xl:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">WhatsApp &#x2197;</span>
-                    <p className="mt-6 text-brandCream/40 text-sm lg:text-base">+234 808 574 1430</p>
-                 </div>
-                 <a href="mailto:michaeldosunmu22@gmail.com" className="group cursor-pointer bg-white/5 p-8 lg:p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500 no-underline">
-                    <p className="text-primary text-xs lg:text-sm font-bold tracking-[0.3em] uppercase mb-4">Official Channel</p>
-                    <span className="text-3xl lg:text-4xl xl:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">Email &#x2197;</span>
-                    <p className="mt-6 text-brandCream/40 text-sm lg:text-base break-all">michaeldosunmu22@gmail.com</p>
-                 </a>
-                 <a href="https://github.com/javex-12" target="_blank" rel="noopener noreferrer" className="group cursor-pointer bg-white/5 p-8 lg:p-10 rounded-[2rem] border border-white/10 hover:border-primary transition-all duration-500 no-underline md:col-span-2 lg:col-span-1">
-                    <p className="text-primary text-xs lg:text-sm font-bold tracking-[0.3em] uppercase mb-4">Open Source</p>
-                    <span className="text-3xl lg:text-4xl xl:text-5xl font-black text-brandCream group-hover:text-primary transition-colors flex items-center justify-between">GitHub &#x2197;</span>
-                    <p className="mt-6 text-brandCream/40 text-sm lg:text-base break-all">github.com/javex-12</p>
-                 </a>
-              </div>
-           </div>
-            <div className="px-6 md:px-20 py-20 border-t border-white/5 relative z-10">
-               <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
-                  <div className="flex flex-col items-center md:items-start"><span className="text-2xl font-black tracking-tighter text-brandCream mb-2">CYDER<span className="text-primary">CODER</span></span><span className="text-[10px] font-bold tracking-[0.4em] uppercase text-brandCream/20">&copy; 2026 DOSUMU MICHAEL</span></div>
-                  <div className="text-[10px] font-bold tracking-[0.4em] uppercase text-primary text-center">Based in Lagos State, NG</div>
-                  <div className="flex items-center gap-6">
-                    <a href="https://github.com/javex-12" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="text-brandCream/30 hover:text-primary transition-colors duration-300">
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" /></svg>
-                    </a>
-                    <a href="mailto:michaeldosunmu22@gmail.com" aria-label="Email" className="text-brandCream/30 hover:text-primary transition-colors duration-300">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                    </a>
-                  </div>
-               </div>
+              <nav className="flex flex-col gap-0">
+                {navItems.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="font-display font-black text-5xl uppercase leading-none py-4 border-b border-ink/20 text-ink no-underline"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    setIsModalOpen(true);
+                  }}
+                  className="menu-cta mt-10 btn-stamp w-full justify-center !py-5"
+                >
+                  Hire me →
+                </button>
+              </nav>
             </div>
-           <div className="absolute bottom-0 left-0 w-full overflow-hidden pointer-events-none opacity-[0.03] select-none whitespace-nowrap"><span className="text-[30vw] font-black text-brandCream uppercase leading-none">EVOLVE</span></div>
-        </section>
+          )}
+
+          <main id="main-content">
+          {/* Hero */}
+          <section id="home" className="mb-10 md:mb-14" aria-label="Introduction">
+            <div className="hero-block px-5 sm:px-8 py-10 sm:py-14 -mx-4 sm:-mx-6 md:-mx-8 mb-0">
+              <HeroMotion />
+              <div className="hero-line relative z-10">
+                <span className="hero-eyebrow">
+                  Full-Stack Developer · Open to work · Lagos, Nigeria
+                </span>
+              </div>
+              <p className="seo-only">
+                Dosumu Michael (CyderCoder) — Full-Stack Developer &amp; Creative Engineer in Lagos, Nigeria.
+                Hire a React, Next.js, Three.js, WebGL, and AI product engineer with 10+ live projects.
+              </p>
+              <h1
+                className="hero-line relative z-10 font-display font-black text-[clamp(2.75rem,12vw,6rem)] uppercase leading-[0.82] tracking-tight mb-6"
+                style={{ color: '#F2EFE8' }}
+              >
+                I build
+                <br />
+                things that
+                <br />
+                actually work.
+              </h1>
+              <p
+                className="hero-line relative z-10 font-body text-body-lg max-w-lg mb-8 font-medium"
+                style={{ color: '#C4BDB2' }}
+              >
+                Hey — I&apos;m <strong>Dosumu Michael</strong> (<strong>CyderCoder</strong>), a full-stack
+                developer &amp; creative engineer in Lagos. I ship React/Next.js apps, Three.js experiences,
+                AI tools, and fintech PWAs — clear goals, honest timelines, work you can click and use.
+              </p>
+              <div className="hero-line flex flex-col sm:flex-row gap-3 relative z-10">
+                <a href="#projects" className="btn-stamp btn-stamp-paper">
+                  See my work →
+                </a>
+                <a href="#ai" className="btn-stamp btn-stamp-outline">
+                  Try AI demo
+                </a>
+                <button type="button" onClick={() => setIsModalOpen(true)} className="btn-stamp btn-stamp-outline">
+                  Hire me
+                </button>
+              </div>
+            </div>
+
+            <div className="ink-grid grid-cols-1 sm:grid-cols-3 mt-0.5">
+              {metaCards.map((card, i) => (
+                <div
+                  key={card.k}
+                  className="card-stamp reveal-item bg-surface p-[18px]"
+                  data-reveal
+                  data-delay={String(i + 1)}
+                >
+                  <div className="card-k font-mono text-[11px] text-blue tracking-[0.08em] uppercase font-semibold mb-2">
+                    {card.k}
+                  </div>
+                  <div className="font-body text-sm font-medium text-ink">{card.v}</div>
+                </div>
+              ))}
+            </div>
+
+            <StatsBar />
+          </section>
+
+          {/* About — keyword-rich, crawlable copy */}
+          <section id="about" className="mb-16 md:mb-24" aria-labelledby="about-heading">
+            <h2
+              id="about-heading"
+              className="section-title reveal-item font-display font-black text-[clamp(2.5rem,8vw,3rem)] uppercase leading-[0.9] mb-3"
+              data-reveal
+            >
+              About CyderCoder
+            </h2>
+            <div className="reveal-item max-w-2xl space-y-4 text-ink-muted text-[15px] sm:text-base leading-relaxed" data-reveal data-delay="2">
+              <p>
+                I&apos;m a <strong className="text-ink">full-stack developer in Lagos, Nigeria</strong> who
+                builds production software — not just demos. Clients hire me for{' '}
+                <strong className="text-ink">React and Next.js</strong> product work,{' '}
+                <strong className="text-ink">AI feature integration</strong>, interactive{' '}
+                <strong className="text-ink">Three.js / WebGL</strong> frontends, and reliable{' '}
+                <strong className="text-ink">fintech PWAs</strong> that hold up under real users.
+              </p>
+              <p>
+                From WhatsApp commerce (SwiftLink Pro) to exam prep (BioByte Pro) and thrift savings (AjoSafe),
+                the through-line is the same: useful products, clean architecture, and interfaces people actually
+                enjoy. Remote-friendly, UTC+1, open for freelance and contract engagements.
+              </p>
+            </div>
+          </section>
+
+          {/* Ticker */}
+          <div className="ticker reveal-item" data-reveal aria-hidden="true">
+            <div className="ticker-track">
+              {[...tickerWords, ...tickerWords].map((word, i) => (
+                <span key={`${word}-${i}`} className="ticker-item">
+                  {word}
+                  <span className="ticker-dot" />
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Skills */}
+          <section id="skills" className="mb-16 md:mb-24" aria-labelledby="skills-heading">
+            <h2
+              id="skills-heading"
+              className="section-title reveal-item font-display font-black text-[clamp(2.5rem,8vw,3rem)] uppercase leading-[0.9] mb-3"
+              data-reveal
+            >
+              Skills &amp; services
+            </h2>
+            <p className="reveal-item text-ink-muted mb-8 md:mb-10 max-w-md" data-reveal data-delay="2">
+              Full-stack web development, AI product engineering, and high-fidelity UI — the stack I ship with every week.
+            </p>
+            <div className="ink-grid grid-cols-1 md:grid-cols-3">
+              {skillCategories.map((cat, i) => (
+                <article
+                  key={cat.title}
+                  className="card-stamp reveal-item bg-surface p-5 sm:p-6 flex flex-col"
+                  data-reveal
+                  data-delay={String(i + 1)}
+                >
+                  <h3 className="font-display font-bold text-[clamp(1.5rem,4vw,2.125rem)] uppercase leading-[0.95] mb-3">
+                    {cat.title}
+                  </h3>
+                  <p className="text-ink-muted text-[15px] mb-6 flex-1">{cat.desc}</p>
+                  <ul className="space-y-2 border-t border-ink/15 pt-4">
+                    {cat.skills.map((s) => (
+                      <li key={s} className="flex items-start gap-3 font-mono text-[12px] uppercase tracking-wide">
+                        <span className="text-orange mt-0.5 shrink-0" aria-hidden="true">
+                          ▸
+                        </span>
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          {/* AI showcase — interactive motion + product thinking */}
+          <AiShowcase />
+
+          {/* Projects */}
+          <section id="projects" className="mb-16 md:mb-24" aria-labelledby="projects-heading">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8 md:mb-10">
+              <div>
+                <h2
+                  id="projects-heading"
+                  className="section-title reveal-item font-display font-black text-[clamp(2.5rem,8vw,3rem)] uppercase leading-[0.9]"
+                  data-reveal
+                >
+                  Selected work
+                </h2>
+              </div>
+              <p className="reveal-item font-body text-sm text-ink-muted max-w-xs md:text-right" data-reveal data-delay="2">
+                {projectData.length} live projects by CyderCoder. Preview in-page or open the live site.
+              </p>
+            </div>
+
+            <ul className="border-t-[3px] border-ink/30 list-none m-0 p-0">
+              {projectData.map((proj, i) => (
+                <li key={proj.id} className="border-0">
+                  <article
+                    className="project-row reveal-item w-full text-left py-5 sm:py-6 px-1 sm:px-2 grid grid-cols-[auto_1fr] sm:grid-cols-[3.5rem_1fr_auto] gap-x-4 gap-y-2 items-start sm:items-center group"
+                    data-reveal
+                    data-delay={String(Math.min((i % 5) + 1, 5))}
+                  >
+                    <span className="font-mono text-[12px] text-blue proj-blue font-semibold pt-1 sm:pt-0">
+                      {proj.id}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <h3 className="font-display font-bold text-[clamp(1.35rem,3.5vw,1.75rem)] uppercase leading-none">
+                          <a
+                            href={proj.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-ink no-underline hover:text-blue"
+                          >
+                            {proj.title}
+                          </a>
+                        </h3>
+                        {proj.isPremium && (
+                          <span className="font-mono text-[9px] uppercase tracking-wider bg-orange/20 text-orange-soft border border-orange/30 px-2 py-0.5 font-bold">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[13px] sm:text-sm text-ink-muted proj-muted max-w-xl mb-2">{proj.desc}</p>
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        <span className="font-mono text-[10px] uppercase tracking-wider text-blue proj-blue mr-1">
+                          {proj.type}
+                        </span>
+                        {proj.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="proj-tag font-mono text-[9px] uppercase tracking-wider border border-ink/20 px-2 py-0.5"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openDemo(i)}
+                          className="font-mono text-[10px] uppercase tracking-wider border border-ink/30 px-3 py-1.5 hover:border-ink text-ink bg-transparent cursor-pointer"
+                        >
+                          Preview
+                        </button>
+                        <a
+                          href={proj.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-mono text-[10px] uppercase tracking-wider border border-orange/40 text-orange-soft px-3 py-1.5 no-underline hover:bg-orange/10"
+                        >
+                          Live site ↗
+                        </a>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => openDemo(i)}
+                      className="proj-arrow hidden sm:inline font-mono text-[11px] uppercase tracking-wider font-bold self-center bg-transparent border-0 cursor-pointer text-ink"
+                    >
+                      Try it →
+                    </button>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* FAQ — visible content matching FAQPage schema */}
+          <section id="faq" className="mb-16 md:mb-24" aria-labelledby="faq-heading">
+            <h2
+              id="faq-heading"
+              className="section-title reveal-item font-display font-black text-[clamp(2.5rem,8vw,3rem)] uppercase leading-[0.9] mb-3"
+              data-reveal
+            >
+              FAQ
+            </h2>
+            <p className="reveal-item text-ink-muted mb-8 md:mb-10 max-w-md" data-reveal data-delay="2">
+              Quick answers for clients searching for a full-stack developer in Lagos.
+            </p>
+            <div className="space-y-0 border-t-[3px] border-ink/30">
+              {faqItems.map((item, i) => (
+                <details
+                  key={item.q}
+                  className="reveal-item border-b border-ink/15 py-5 group"
+                  data-reveal
+                  data-delay={String(Math.min(i + 1, 5))}
+                >
+                  <summary className="font-display font-bold text-lg sm:text-xl uppercase leading-snug cursor-pointer list-none flex justify-between gap-4 items-start text-ink">
+                    <span>{item.q}</span>
+                    <span className="font-mono text-orange text-sm shrink-0 mt-1 group-open:rotate-45 transition-transform" aria-hidden="true">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-3 text-ink-muted text-[15px] leading-relaxed max-w-2xl">{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+
+          {/* Contact */}
+          <section id="contact" className="mb-12" aria-labelledby="contact-heading">
+            <div
+              className="contact-block reveal-item px-5 sm:px-8 py-10 sm:py-14 -mx-4 sm:-mx-6 md:-mx-8 mb-0.5"
+              data-reveal
+            >
+              <h2
+                id="contact-heading"
+                className="font-display font-black text-[clamp(2.5rem,10vw,4.5rem)] uppercase leading-[0.85] mb-6"
+              >
+                Hire a developer
+                <br />
+                in Lagos.
+              </h2>
+              <p className="font-body text-body-lg text-ink/70 max-w-md mb-8 font-medium">
+                Freelance builds, AI features, fintech PWAs, or a focused collab — if it&apos;s useful and
+                shippable, I&apos;m in. Remote-ready worldwide.
+              </p>
+              <button type="button" onClick={() => setIsModalOpen(true)} className="btn-stamp btn-stamp-paper">
+                Send a message →
+              </button>
+            </div>
+
+            <div className="ink-grid grid-cols-1 sm:grid-cols-3 -mx-4 sm:-mx-6 md:-mx-8">
+              <a
+                href="https://wa.me/2348085741430?text=Hey%20Michael%20%E2%80%94%20I%20saw%20your%20portfolio"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="card-stamp reveal-item bg-surface p-5 sm:p-6 text-left no-underline text-ink"
+                data-reveal
+                data-delay="1"
+              >
+                <div className="card-k font-mono text-[11px] text-blue tracking-[0.08em] uppercase font-semibold mb-2">
+                  WhatsApp
+                </div>
+                <div className="font-display font-bold text-2xl uppercase leading-none mb-2 text-ink">Chat ↗</div>
+                <p className="font-mono text-[12px] text-ink-muted">+234 808 574 1430</p>
+              </a>
+              <a
+                href="mailto:michaeldosunmu22@gmail.com?subject=Project%20inquiry%20%E2%80%94%20CyderCoder"
+                className="card-stamp reveal-item bg-surface p-5 sm:p-6 no-underline text-ink"
+                data-reveal
+                data-delay="2"
+              >
+                <div className="card-k font-mono text-[11px] text-blue tracking-[0.08em] uppercase font-semibold mb-2">
+                  Email
+                </div>
+                <div className="font-display font-bold text-2xl uppercase leading-none mb-2">Write ↗</div>
+                <p className="font-mono text-[12px] text-ink-muted break-all">michaeldosunmu22@gmail.com</p>
+              </a>
+              <a
+                href="https://github.com/javex-12"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="card-stamp reveal-item bg-surface p-5 sm:p-6 no-underline text-ink"
+                data-reveal
+                data-delay="3"
+              >
+                <div className="card-k font-mono text-[11px] text-blue tracking-[0.08em] uppercase font-semibold mb-2">
+                  GitHub
+                </div>
+                <div className="font-display font-bold text-2xl uppercase leading-none mb-2">Code ↗</div>
+                <p className="font-mono text-[12px] text-ink-muted">github.com/javex-12</p>
+              </a>
+            </div>
+          </section>
+          </main>
+
+          <footer
+            className="reveal-item pt-8 border-t border-ink/20"
+            data-reveal
+            role="contentinfo"
+            itemScope
+            itemType="https://schema.org/WPFooter"
+          >
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-6">
+              <div>
+                <div className="brand-mark font-display font-black text-lg uppercase tracking-tight">
+                  Cyder<span className="brand-coder">Coder</span>
+                </div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted mt-1">
+                  © 2026 Dosumu Michael · Full-Stack Developer, Lagos Nigeria
+                </p>
+              </div>
+              <nav aria-label="Footer" className="flex flex-wrap gap-x-4 gap-y-2">
+                <a href="#about" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">About</a>
+                <a href="#skills" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Skills</a>
+                <a href="#ai" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">AI</a>
+                <a href="#projects" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Work</a>
+                <a href="#faq" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">FAQ</a>
+                <a href="#contact" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Contact</a>
+                <a href="https://github.com/javex-12" target="_blank" rel="noopener noreferrer" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">GitHub</a>
+                <a href="mailto:michaeldosunmu22@gmail.com" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Email</a>
+                <a href="/sitemap.xml" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Sitemap</a>
+              </nav>
+            </div>
+            <p className="font-mono text-[10px] text-ink-muted leading-relaxed max-w-2xl">
+              CyderCoder is the portfolio of Dosumu Michael — full-stack developer &amp; creative engineer in Lagos,
+              Nigeria. Specializing in React, Next.js, Three.js, WebGL, AI products, and fintech PWAs.
+            </p>
+          </footer>
+        </div>
       </div>
     </>
   );
 };
 
-export default App;
+export default App;

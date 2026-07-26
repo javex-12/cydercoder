@@ -1,0 +1,34 @@
+{
+  "name": "CyderCoder — Dosumu Michael Portfolio",
+  "short_name": "CyderCoder",
+  "description": "Portfolio of Dosumu Michael (CyderCoder), full-stack developer & creative engineer in Lagos, Nigeria. React, Three.js, WebGL, AI, fintech PWAs.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#121110",
+  "theme_color": "#121110",
+  "lang": "en-NG",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "portfolio"],
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

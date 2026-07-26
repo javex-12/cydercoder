@@ -1,0 +1,17 @@
+/* TEAM */
+Name: Dosumu Michael
+Handle: CyderCoder
+Role: Full-Stack Developer & Creative Engineer
+Location: Lagos, Nigeria
+Contact: michaeldosunmu22@gmail.com
+GitHub: https://github.com/javex-12
+Site: https://cydercoder.vercel.app/
+
+/* THANKS */
+Fonts: Big Shoulders Stencil Display, Hanken Grotesk, Martian Mono
+Stack: React, Vite, Tailwind CSS, GSAP, Framer Motion, Three.js
+
+/* SITE */
+Last update: 2026-07-24
+Standards: HTML5, CSS3, ES modules
+Software: VS Code, Vite

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System — Spec Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&family=Martian+Mono:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F5F3EE;
+    --ink: #0A0A0A;
+    --ink-muted: #5C5952;
+    --orange: #FF4D00;
+    --blue: #0047FF;
+
+    --font-display: 'Big Shoulders Stencil Display', sans-serif;
+    --font-body: 'Hanken Grotesk', sans-serif;
+    --font-mono: 'Martian Mono', monospace;
+
+    --size-caption: 12px;
+    --size-body: 16px;
+    --size-body-lg: 20px;
+    --size-h4: 24px;
+    --size-h3: 34px;
+    --size-h2: 48px;
+    --size-h1: 96px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.5;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px; }
+
+  /* registration / crop marks — signature element, ties to print/spec-sheet world */
+  .crop { position: fixed; width: 16px; height: 16px; border: 2px solid var(--orange); pointer-events: none; }
+  .crop.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+  .crop.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+  .crop.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+  .crop.br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+  @media (max-width: 640px) { .crop { display: none; } }
+
+  /* signature motion: "press registration" — marks punch in with a mechanical
+     stepped snap, like plates aligning on a printing press, not a smooth fade */
+  .crop { animation: cropPunch 480ms steps(6, end) both; }
+  .crop.tr { animation-delay: 70ms; }
+  .crop.bl { animation-delay: 140ms; }
+  .crop.br { animation-delay: 210ms; }
+  @keyframes cropPunch {
+    0% { opacity: 0; transform: scale(2.4); }
+    16% { opacity: 1; }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .crop { animation: none; }
+  }
+
+  .doc-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 0 24px; margin-bottom: 48px;
+    border-bottom: 3px solid var(--ink);
+  }
+  .doc-header .tag { font-family: var(--font-mono); font-size: var(--size-caption); letter-spacing: 0.08em; text-transform: uppercase; }
+  .doc-header .stamp {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--paper); background: var(--ink);
+    padding: 4px 10px; letter-spacing: 0.06em; transform: rotate(-2deg);
+  }
+
+  section { margin-bottom: 80px; }
+
+  /* below-the-fold sections cut in on a staggered timer after the hero
+     settles — same guillotine wipe, but load-driven rather than
+     scroll-driven so it never depends on IntersectionObserver firing */
+  .reveal {
+    clip-path: inset(0 0 0 100%);
+    position: relative;
+    animation: guillotineReveal 520ms cubic-bezier(0.83,0,0.17,1) forwards;
+  }
+  .reveal::before {
+    content: "";
+    position: absolute; top: 0; bottom: 0; width: 2px;
+    background: var(--blue);
+    right: 100%;
+    opacity: 0;
+    animation: bladeSweep 520ms steps(12, end) forwards;
+  }
+  section.reveal:nth-of-type(2), section.reveal:nth-of-type(2)::before { animation-delay: 950ms; }
+  section.reveal:nth-of-type(3), section.reveal:nth-of-type(3)::before { animation-delay: 1200ms; }
+  section.reveal:nth-of-type(4), section.reveal:nth-of-type(4)::before { animation-delay: 1450ms; }
+  @keyframes guillotineReveal {
+    to { clip-path: inset(0 0 0 0%); }
+  }
+  @keyframes bladeSweep {
+    0% { right: 100%; opacity: 1; }
+    95% { opacity: 1; }
+    100% { right: -2px; opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal.in-view { clip-path: none; animation: none; }
+    .reveal::before { display: none; }
+  }
+
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--font-mono); font-size: var(--size-caption);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+  .section-label::before { content: ""; width: 24px; height: 3px; background: var(--orange); }
+
+  /* HERO — orange as a full color block, not a small accent */
+  .hero-block {
+    background: var(--orange);
+    color: var(--ink);
+    padding: 56px 32px;
+    margin: 0 -32px 32px;
+    position: relative;
+    overflow: hidden;
+    clip-path: inset(0 100% 0 0);
+    animation: guillotineWipe 650ms cubic-bezier(0.83,0,0.17,1) 260ms forwards;
+  }
+  @keyframes guillotineWipe {
+    to { clip-path: inset(0 0% 0 0); }
+  }
+  .hero-block::after {
+    /* the "press flash" — a pale streak sweeping through right after the
+       cut, like a roller passing over freshly stamped ink */
+    content: "";
+    position: absolute; top: 0; bottom: 0; left: -60px; width: 60px;
+    background: linear-gradient(90deg, transparent, rgba(245,243,238,0.85), transparent);
+    animation: pressFlash 550ms steps(9, end) 700ms forwards;
+    opacity: 0;
+  }
+  @keyframes pressFlash {
+    0% { left: -60px; opacity: 1; }
+    95% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-block { clip-path: none; animation: none; }
+    .hero-block::after { display: none; }
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono); font-size: var(--size-caption);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    display: inline-block; background: var(--ink); color: var(--orange);
+    padding: 5px 10px; margin-bottom: 24px;
+  }
+  .hero-title {
+    font-family: var(--font-display); font-weight: 900; font-size: var(--size-h1);
+    line-height: 0.82; letter-spacing: 0em; margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+  .hero-sub { font-family: var(--font-body); font-size: var(--size-body-lg); max-width: 520px; margin-bottom: 32px; font-weight: 500; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 700; letter-spacing: 0.03em;
+    padding: 14px 26px; background: var(--ink); color: var(--paper);
+    border: none; text-transform: uppercase; cursor: pointer;
+    position: relative;
+  }
+  /* signature interaction: instead of a smooth hover-scale, the element
+     "stamps" — a quick anisotropic squash, like a rubber stamp hitting
+     paper — plus a brief offset duplicate flash referencing a
+     misregistered print plate */
+  .btn:hover, .btn:focus-visible {
+    animation: stampThud 240ms steps(5, end);
+  }
+  .btn::before {
+    content: "";
+    position: absolute; inset: -3px;
+    border: 1.5px solid var(--orange);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .btn:hover::before, .btn:focus-visible::before {
+    animation: ghostMisprint 240ms steps(4, end);
+  }
+  @keyframes stampThud {
+    0% { transform: scale(1, 1); }
+    20% { transform: scale(1.06, 0.9); }
+    45% { transform: scale(0.95, 1.06); }
+    70% { transform: scale(1.02, 0.98); }
+    100% { transform: scale(1, 1); }
+  }
+  @keyframes ghostMisprint {
+    0% { opacity: 0; transform: translate(0, 0); }
+    35% { opacity: 0.8; transform: translate(3px, -2px); }
+    70% { opacity: 0.35; transform: translate(-2px, 1px); }
+    100% { opacity: 0; transform: translate(0, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn:hover, .btn:focus-visible { animation: none; }
+    .btn:hover::before, .btn:focus-visible::before { animation: none; }
+  }
+
+  .card-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--ink); margin-top: 32px; }
+  .card { background: var(--paper); padding: 18px; }
+  .card:hover { animation: stampThud 240ms steps(5, end); }
+  .card .k { font-family: var(--font-mono); font-size: 11px; color: var(--blue); letter-spacing: 0.08em; margin-bottom: 8px; text-transform: uppercase; font-weight: 600; transition: color 0s; }
+  .card:hover .k { color: var(--orange); }
+  .card .v { font-family: var(--font-body); font-size: 14px; font-weight: 500; }
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover { animation: none; }
+  }
+
+  /* COLOR SWATCHES */
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2px; background: var(--ink); }
+  .swatch { background: var(--paper); }
+  .swatch-fill { height: 84px; }
+  .swatch-info { padding: 12px; font-family: var(--font-mono); font-size: 12px; }
+  .swatch-role { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .swatch-hex { color: var(--ink-muted); }
+  .swatch-note { font-size: 10px; color: var(--ink-muted); margin-top: 4px; }
+
+  /* TYPE RAMP */
+  .ramp-row { display: flex; align-items: baseline; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--ink); }
+  .ramp-row:last-child { border-bottom: none; }
+  .ramp-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); width: 130px; flex-shrink: 0; line-height: 1.5; }
+  .ramp-meta .px { color: var(--blue); font-weight: 700; }
+  .ramp-sample { flex: 1; overflow: hidden; }
+
+  .r-h1 { font-family: var(--font-display); font-weight: 900; font-size: 72px; line-height: 0.85; text-transform: uppercase; }
+  .r-h2 { font-family: var(--font-display); font-weight: 900; font-size: var(--size-h2); line-height: 0.9; text-transform: uppercase; }
+  .r-h3 { font-family: var(--font-display); font-weight: 700; font-size: var(--size-h3); line-height: 0.95; text-transform: uppercase; }
+  .r-h4 { font-family: var(--font-mono); font-size: var(--size-h4); font-weight: 500; line-height: 1.15; }
+  .r-body-lg { font-family: var(--font-body); font-size: var(--size-body-lg); font-weight: 500; }
+  .r-body { font-family: var(--font-body); font-size: var(--size-body); font-weight: 400; }
+  .r-caption { font-family: var(--font-mono); font-size: var(--size-caption); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); }
+
+  pre {
+    font-family: var(--font-mono); font-size: 13px;
+    background: var(--ink); color: var(--paper);
+    padding: 22px; overflow-x: auto; line-height: 1.8;
+  }
+  pre .c1 { color: #8a8a8a; }
+  pre .c2 { color: var(--orange); }
+
+  @media (max-width: 640px) {
+    .hero-block { margin: 0 -16px 24px; padding: 40px 20px; }
+    .hero-title { font-size: 48px; }
+    .card-row { grid-template-columns: 1fr; }
+    .ramp-row { flex-direction: column; gap: 6px; }
+    .ramp-meta { width: auto; }
+    .r-h1 { font-size: 44px; }
+  }
+</style>
+</head>
+<body>
+<div class="crop tl"></div><div class="crop tr"></div><div class="crop bl"></div><div class="crop br"></div>
+
+<div class="wrap">
+  <div class="doc-header">
+    <span class="tag">System_03 // Spec Sheet</span>
+    <span class="stamp">REV. 03 — APPROVED</span>
+  </div>
+
+  <section>
+    <span class="section-label">§01 — Composed example</span>
+    <div class="hero-block">
+      <span class="hero-eyebrow">Available Q3 2026</span>
+      <h1 class="hero-title">Built to<br>spec. shipped<br>on time.</h1>
+      <p class="hero-sub">Portfolio of a developer who reads the datasheet before the demo. Systems, tools, and the occasional side project.</p>
+      <button class="btn">View the work →</button>
+    </div>
+    <div class="card-row">
+      <div class="card"><div class="k">01 — Stack</div><div class="v">TypeScript, Rust, Postgres</div></div>
+      <div class="card"><div class="k">02 — Focus</div><div class="v">Developer tooling</div></div>
+      <div class="card"><div class="k">03 — Based</div><div class="v">Remote / UTC+1</div></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-fill" style="background:#F5F3EE; border-bottom:1px solid #0A0A0A"></div><div class="swatch-info"><div class="swatch-role">Paper / bg</div><div class="swatch-hex">#F5F3EE</div></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:#0A0A0A"></div><div class="swatch-info"><div class="swatch-role">Ink / text</div><div class="swatch-hex">#0A0A0A</div></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:#FF4D00"></div><div class="swatch-info"><div class="swatch-role">Orange — block</div><div class="swatch-hex">#FF4D00</div><div class="swatch-note">Use as fill w/ black text, not as text color</div></div></div>
+      <div class="swatch"><div class="swatch-fill" style="background:#0047FF"></div><div class="swatch-info"><div class="swatch-role">Blue — accent</div><div class="swatch-hex">#0047FF</div><div class="swatch-note">Safe as text on paper</div></div></div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="ramp-row"><div class="ramp-meta">H1 — Display<br><span class="px">72px / 900</span><br>Big Shoulders Stencil</div><div class="ramp-sample r-h1">SPEC 40-A</div></div>
+    <div class="ramp-row"><div class="ramp-meta">H2<br><span class="px">48px / 900</span><br>Big Shoulders Stencil</div><div class="ramp-sample r-h2">Selected Work</div></div>
+    <div class="ramp-row"><div class="ramp-meta">H3<br><span class="px">34px / 700</span><br>Big Shoulders Stencil</div><div class="ramp-sample r-h3">Project Index</div></div>
+    <div class="ramp-row"><div class="ramp-meta">H4 / label<br><span class="px">24px / 500</span><br>Martian Mono</div><div class="ramp-sample r-h4">About the work</div></div>
+    <div class="ramp-row"><div class="ramp-meta">Body large<br><span class="px">20px / 500</span><br>Hanken Grotesk</div><div class="ramp-sample r-body-lg">Used for lead paragraphs and pull quotes where extra weight in the copy earns extra size.</div></div>
+    <div class="ramp-row"><div class="ramp-meta">Body<br><span class="px">16px / 400</span><br>Hanken Grotesk</div><div class="ramp-sample r-body">Default reading size for project descriptions, about page, and general copy.</div></div>
+    <div class="ramp-row"><div class="ramp-meta">Caption<br><span class="px">12px / 400</span><br>Martian Mono, tracked</div><div class="ramp-sample r-caption">Metadata / timestamps / eyebrows</div></div>
+  </section>
+
+  <section class="reveal">
+    <pre><span class="c1">:root {</span>
+  <span class="c2">--paper</span>: #F5F3EE;
+  <span class="c2">--ink</span>: #0A0A0A;
+  <span class="c2">--ink-muted</span>: #5C5952;
+  <span class="c2">--orange</span>: #FF4D00;  <span class="c1">/* fill only, not text-on-paper */</span>
+  <span class="c2">--blue</span>: #0047FF;    <span class="c1">/* safe as text on paper */</span>
+
+  <span class="c2">--font-display</span>: 'Big Shoulders Stencil Display', sans-serif; <span class="c1">/* weight 900 */</span>
+  <span class="c2">--font-body</span>: 'Hanken Grotesk', sans-serif;
+  <span class="c2">--font-mono</span>: 'Martian Mono', monospace;
+<span class="c1">}</span></pre>
+  </section>
+</div>
+</body>
+</html>
