@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import LoadingScreen from './components/LoadingScreen/LoadingScreen';
 import ContactModal from './components/ContactModal';
 import AiShowcase from './components/AiShowcase';
 import StatsBar from './components/StatsBar';
 import HeroMotion from './components/HeroMotion';
+import HeroText from './components/HeroText';
+import { PROJECT_SLUGS } from './data/projectIds';
 import { useScrollReveal } from './hooks/useScrollReveal';
 import './index.css';
+
+const CyderConcierge = lazy(() => import('./components/CyderConcierge'));
 
 const skillCategories = [
   {
@@ -96,9 +100,20 @@ const App = () => {
   const [activeDemoIdx, setActiveDemoIdx] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [highlightedProjects, setHighlightedProjects] = useState([]);
 
   const siteReady = !isLoading;
   useScrollReveal(siteReady);
+
+  const handleCyderMatch = useCallback((projectIds) => {
+    setHighlightedProjects(projectIds || []);
+  }, []);
+
+  useEffect(() => {
+    if (!highlightedProjects.length) return undefined;
+    const t = window.setTimeout(() => setHighlightedProjects([]), 12000);
+    return () => window.clearTimeout(t);
+  }, [highlightedProjects]);
 
   useEffect(() => {
     if (activeDemoIdx !== null || isModalOpen || menuOpen) {
@@ -193,6 +208,15 @@ const App = () => {
         onSend={handleSendWhatsApp}
         initialMessage="Hey Michael — I saw your portfolio and wanted to chat about a project."
       />
+
+      {siteReady && (
+        <Suspense fallback={null}>
+          <CyderConcierge
+            onMatch={handleCyderMatch}
+            onOpenContact={() => setIsModalOpen(true)}
+          />
+        </Suspense>
+      )}
 
       <div
         className={`site-shell min-h-screen bg-paper transition-opacity duration-500 ${
@@ -289,16 +313,9 @@ const App = () => {
                 Dosumu Michael (CyderCoder) — Full-Stack Developer &amp; Creative Engineer in Lagos, Nigeria.
                 Hire a React, Next.js, Three.js, WebGL, and AI product engineer with 10+ live projects.
               </p>
-              <h1
-                className="hero-line relative z-10 font-display font-black text-[clamp(2.75rem,12vw,6rem)] uppercase leading-[0.82] tracking-tight mb-6"
-                style={{ color: '#F2EFE8' }}
-              >
-                I build
-                <br />
-                things that
-                <br />
-                actually work.
-              </h1>
+              <div className="hero-line relative z-10">
+                <HeroText ready={siteReady} />
+              </div>
               <p
                 className="hero-line relative z-10 font-body text-body-lg max-w-lg mb-8 font-medium"
                 style={{ color: '#C4BDB2' }}
@@ -312,7 +329,7 @@ const App = () => {
                   See my work →
                 </a>
                 <a href="#ai" className="btn-stamp btn-stamp-outline">
-                  Try AI demo
+                  Ship Forge AI
                 </a>
                 <button type="button" onClick={() => setIsModalOpen(true)} className="btn-stamp btn-stamp-outline">
                   Hire me
@@ -437,10 +454,16 @@ const App = () => {
             </div>
 
             <ul className="border-t-[3px] border-ink/30 list-none m-0 p-0">
-              {projectData.map((proj, i) => (
+              {projectData.map((proj, i) => {
+                const slug = PROJECT_SLUGS[proj.id];
+                const isHighlighted = slug && highlightedProjects.includes(slug);
+                return (
                 <li key={proj.id} className="border-0">
                   <article
-                    className="project-row reveal-item w-full text-left py-5 sm:py-6 px-1 sm:px-2 grid grid-cols-[auto_1fr] sm:grid-cols-[3.5rem_1fr_auto] gap-x-4 gap-y-2 items-start sm:items-center group"
+                    data-project-id={slug}
+                    className={`project-row reveal-item w-full text-left py-5 sm:py-6 px-1 sm:px-2 grid grid-cols-[auto_1fr] sm:grid-cols-[3.5rem_1fr_auto] gap-x-4 gap-y-2 items-start sm:items-center group ${
+                      isHighlighted ? 'project-ai-match' : ''
+                    }`}
                     data-reveal
                     data-delay={String(Math.min((i % 5) + 1, 5))}
                   >
@@ -506,7 +529,8 @@ const App = () => {
                     </button>
                   </article>
                 </li>
-              ))}
+              );
+              })}
             </ul>
           </section>
 

@@ -1,71 +1,150 @@
 import React, { useEffect, useRef } from 'react';
 
 /**
- * Lightweight ambient motion for the hero — CSS-friendly canvas dust.
- * Respects prefers-reduced-motion.
+ * Three.js wireframe hero — mouse-reactive, pauses off-screen / hidden tab.
+ * Lazy-loaded Three chunk; respects prefers-reduced-motion.
  */
 const HeroMotion = () => {
-  const ref = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = ref.current;
+    const canvas = canvasRef.current;
     if (!canvas) return undefined;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
 
-    const ctx = canvas.getContext('2d');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return undefined;
+
+    let disposed = false;
     let raf = 0;
-    let alive = true;
-    const dots = Array.from({ length: 36 }, () => ({
-      x: Math.random(),
-      y: Math.random(),
-      s: 0.4 + Math.random() * 1.4,
-      sp: 0.00015 + Math.random() * 0.00035,
-      a: 0.15 + Math.random() * 0.35,
-    }));
+    let visible = true;
+    let mx = 0;
+    let my = 0;
+    let renderer;
+    let mesh;
+    let scene;
+    let camera;
 
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+    const boot = async () => {
+      const THREE = await import('three');
+      if (disposed) return;
 
-    const draw = (t) => {
-      if (!alive) return;
-      const { width, height } = canvas.getBoundingClientRect();
-      ctx.clearRect(0, 0, width, height);
-      dots.forEach((d, i) => {
-        d.y -= d.sp;
-        if (d.y < -0.02) {
-          d.y = 1.02;
-          d.x = Math.random();
-        }
-        const pulse = 0.6 + 0.4 * Math.sin(t / 900 + i);
-        ctx.fillStyle =
-          i % 5 === 0
-            ? `rgba(138, 176, 232, ${d.a * pulse})`
-            : `rgba(212, 101, 58, ${d.a * pulse})`;
-        ctx.beginPath();
-        ctx.arc(d.x * width, d.y * height, d.s, 0, Math.PI * 2);
-        ctx.fill();
+      const parent = canvas.parentElement;
+      if (!parent) return;
+
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance',
       });
-      raf = requestAnimationFrame(draw);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+      camera.position.z = 4.2;
+
+      mesh = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(2.1, 1),
+        new THREE.MeshPhongMaterial({
+          color: 0xd4653a,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.28,
+          shininess: 90,
+        })
+      );
+      scene.add(mesh);
+
+      const inner = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(1.35, 0),
+        new THREE.MeshBasicMaterial({
+          color: 0x8ab0e8,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.12,
+        })
+      );
+      mesh.add(inner);
+
+      scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+      const point = new THREE.PointLight(0xd4653a, 1.8);
+      point.position.set(8, 6, 10);
+      scene.add(point);
+
+      const onMove = (e) => {
+        mx = (e.clientX / window.innerWidth - 0.5) * 2;
+        my = (e.clientY / window.innerHeight - 0.5) * 2;
+      };
+
+      const onVis = () => {
+        visible = document.visibilityState === 'visible';
+      };
+
+      const resize = () => {
+        const r = parent.getBoundingClientRect();
+        renderer.setSize(r.width, r.height, false);
+        camera.aspect = r.width / Math.max(r.height, 1);
+        camera.updateProjectionMatrix();
+      };
+
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          visible = entry.isIntersecting && document.visibilityState === 'visible';
+        },
+        { threshold: 0.05 }
+      );
+      io.observe(parent);
+
+      const animate = () => {
+        if (disposed) return;
+        raf = requestAnimationFrame(animate);
+        if (visible) {
+          mesh.rotation.y += 0.0025;
+          mesh.rotation.x += 0.0012;
+          mesh.rotation.x += my * 0.0018;
+          mesh.rotation.y += mx * 0.0018;
+          inner.rotation.y -= 0.004;
+          inner.rotation.x -= 0.002;
+          renderer.render(scene, camera);
+        }
+      };
+
+      window.addEventListener('mousemove', onMove, { passive: true });
+      window.addEventListener('resize', resize);
+      document.addEventListener('visibilitychange', onVis);
+      resize();
+      animate();
+
+      return () => {
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('resize', resize);
+        document.removeEventListener('visibilitychange', onVis);
+        io.disconnect();
+      };
     };
 
-    resize();
-    raf = requestAnimationFrame(draw);
-    window.addEventListener('resize', resize);
+    let cleanupScene;
+    boot().then((fn) => {
+      cleanupScene = fn;
+    });
+
     return () => {
-      alive = false;
+      disposed = true;
       cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
+      cleanupScene?.();
+      mesh?.geometry?.dispose();
+      mesh?.material?.dispose();
+      mesh?.children?.forEach((c) => {
+        c.geometry?.dispose();
+        c.material?.dispose();
+      });
+      renderer?.dispose();
     };
   }, []);
 
   return (
     <canvas
-      ref={ref}
+      ref={canvasRef}
       className="hero-motion absolute inset-0 w-full h-full pointer-events-none"
       aria-hidden="true"
     />
