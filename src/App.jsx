@@ -51,7 +51,7 @@ const metaCards = [
 const navItems = [
   { label: 'About', href: '#about' },
   { label: 'Skills', href: '#skills' },
-  { label: 'AI', href: '#ai' },
+  { label: 'Scope', href: '#ai' },
   { label: 'Work', href: '#projects' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Contact', href: '#contact' },
@@ -329,7 +329,7 @@ const App = () => {
                   See my work →
                 </a>
                 <a href="#ai" className="btn-stamp btn-stamp-outline">
-                  Ship Forge AI
+                  Try scope desk
                 </a>
                 <button type="button" onClick={() => setIsModalOpen(true)} className="btn-stamp btn-stamp-outline">
                   Hire me
@@ -462,7 +462,7 @@ const App = () => {
                   <article
                     data-project-id={slug}
                     className={`project-row reveal-item w-full text-left py-5 sm:py-6 px-1 sm:px-2 grid grid-cols-[auto_1fr] sm:grid-cols-[3.5rem_1fr_auto] gap-x-4 gap-y-2 items-start sm:items-center group ${
-                      isHighlighted ? 'project-ai-match' : ''
+                      isHighlighted ? 'project-compass-match' : ''
                     }`}
                     data-reveal
                     data-delay={String(Math.min((i % 5) + 1, 5))}
@@ -653,7 +653,7 @@ const App = () => {
               <nav aria-label="Footer" className="flex flex-wrap gap-x-4 gap-y-2">
                 <a href="#about" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">About</a>
                 <a href="#skills" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Skills</a>
-                <a href="#ai" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">AI</a>
+                <a href="#ai" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Scope</a>
                 <a href="#projects" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Work</a>
                 <a href="#faq" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">FAQ</a>
                 <a href="#contact" className="font-mono text-[11px] uppercase tracking-wider text-ink-muted hover:text-blue no-underline">Contact</a>

@@ -1,57 +1,34 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { PROJECT_NAMES } from '../data/projectIds';
 
 const MODES = [
-  { id: 'hire', label: 'Hire me', hint: 'Need a builder who ships' },
-  { id: 'collab', label: 'Collab', hint: 'Build something together' },
-  { id: 'learn', label: 'Learn', hint: 'Mentorship & curriculum' },
+  { id: 'hire', label: 'Hire', hint: 'You need something built' },
+  { id: 'collab', label: 'Collab', hint: 'Build together' },
+  { id: 'learn', label: 'Learn', hint: 'Mentorship' },
 ];
 
 const PROMPTS = {
   hire: [
-    'Need a React dashboard with AI chat',
-    'Groq-powered Nigerian product UX',
-    'Fast Next.js portfolio engineer',
+    'WhatsApp storefront for my shop',
+    'Exam prep app for WAEC students',
+    'Savings circle app for my community',
   ],
   collab: [
-    'Open-source AI tooling for Africa',
-    'Edtech for WAEC students',
-    'Fintech for rotating savings',
+    'Edtech for Nigerian schools',
+    'Open-source tool for creators',
+    'Music learning for choirs',
   ],
   learn: [
-    'Teach teens web + AI in 100 days',
-    'WhatsApp-first coding curriculum',
-    'How you ship with Groq so fast',
+    '100-day web curriculum for teens',
+    'Teaching code through WhatsApp',
+    'From zero to shipping a PWA',
   ],
 };
 
-function FitRing({ score, active }) {
-  const r = 36;
-  const c = 2 * Math.PI * r;
-  const offset = c - (score / 100) * c;
-
-  return (
-    <div className="cyder-ring relative w-[5.5rem] h-[5.5rem] shrink-0">
-      <svg className="w-full h-full -rotate-90" viewBox="0 0 88 88" aria-hidden="true">
-        <circle cx="44" cy="44" r={r} fill="none" stroke="rgba(242,239,232,0.12)" strokeWidth="5" />
-        <circle
-          cx="44"
-          cy="44"
-          r={r}
-          fill="none"
-          stroke="var(--orange)"
-          strokeWidth="5"
-          strokeLinecap="square"
-          strokeDasharray={c}
-          strokeDashoffset={active ? offset : c}
-          className="cyder-ring-progress"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-display font-black text-2xl leading-none text-ink">{score}</span>
-        <span className="font-mono text-[8px] uppercase tracking-widest text-ink-muted">fit</span>
-      </div>
-    </div>
-  );
+function fitLabel(score) {
+  if (score >= 80) return 'Strong match';
+  if (score >= 55) return 'Good match';
+  return 'Partial match';
 }
 
 const CyderConcierge = ({ onMatch, onOpenContact }) => {
@@ -61,15 +38,19 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [match, setMatch] = useState(null);
-  const [latencyMs, setLatencyMs] = useState(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
     if (open) {
-      const t = window.setTimeout(() => inputRef.current?.focus(), 280);
+      const t = window.setTimeout(() => inputRef.current?.focus(), 300);
       return () => window.clearTimeout(t);
     }
     return undefined;
+  }, [open]);
+
+  useEffect(() => {
+    document.body.classList.toggle('compass-open', open);
+    return () => document.body.classList.remove('compass-open');
   }, [open]);
 
   useEffect(() => {
@@ -89,8 +70,6 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
       setLoading(true);
       setError('');
       setMatch(null);
-      setLatencyMs(null);
-      const started = performance.now();
 
       try {
         const res = await fetch('/api/cyder-match', {
@@ -100,13 +79,22 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
         });
 
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || data.detail || `Request failed (${res.status})`);
+        if (!res.ok) throw new Error(data.error || 'Could not run match right now. Try again.');
 
         setMatch(data);
-        setLatencyMs(data.latencyMs ?? Math.round(performance.now() - started));
         onMatch?.(data.matchedProjects || []);
+
+        window.setTimeout(() => {
+          const first = data.matchedProjects?.[0];
+          if (first) {
+            document.querySelector(`[data-project-id="${first}"]`)?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+          }
+        }, 400);
       } catch (err) {
-        setError(err?.message || 'Cyder could not connect. Check GROQ_API_KEY on the server.');
+        setError(err?.message || 'Something went wrong. Try again in a moment.');
       } finally {
         setLoading(false);
       }
@@ -119,61 +107,58 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
     runMatch(message);
   };
 
-  const scrollToProjects = () => {
-    setOpen(false);
-    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
   return (
     <>
       <button
         type="button"
-        className={`cyder-fab ${open ? 'is-open' : ''}`}
+        className={`compass-tab ${open ? 'is-open' : ''}`}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-controls="cyder-panel"
-        aria-label={open ? 'Close Cyder AI' : 'Open Cyder AI match engine'}
+        aria-controls="compass-panel"
+        aria-label={open ? 'Close project finder' : 'Open project finder'}
       >
-        <span className="cyder-fab-core" aria-hidden="true" />
-        <span className="cyder-fab-label font-mono text-[10px] uppercase tracking-[0.14em]">
-          {open ? 'Close' : 'Cyder AI'}
+        <span className="compass-tab-mark" aria-hidden="true">
+          <span className="compass-tab-crop compass-tab-crop-tl" />
+          <span className="compass-tab-crop compass-tab-crop-br" />
+          <span className="compass-tab-letter">?</span>
         </span>
+        <span className="compass-tab-text font-mono">Find fit</span>
       </button>
 
       <div
-        id="cyder-panel"
-        className={`cyder-panel ${open ? 'is-open' : ''}`}
+        id="compass-panel"
+        className={`compass-panel ${open ? 'is-open' : ''}`}
         role="dialog"
         aria-modal="true"
-        aria-label="Cyder AI portfolio matcher"
+        aria-label="Project finder"
         aria-hidden={!open}
       >
-        <div className="cyder-panel-head">
+        <header className="compass-panel-head">
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-orange-soft mb-1">
-              Live · Groq · not a chatbot
-            </div>
-            <h2 className="font-display font-black text-2xl uppercase leading-none text-ink m-0">
-              Cyder Match
+            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-blue mb-1 m-0">
+              Portfolio compass
+            </p>
+            <h2 className="font-display font-black text-[clamp(1.75rem,5vw,2.25rem)] uppercase leading-none text-ink m-0">
+              What do you need?
             </h2>
           </div>
-          <button type="button" onClick={() => setOpen(false)} className="cyder-close" aria-label="Close">
+          <button type="button" onClick={() => setOpen(false)} className="compass-close" aria-label="Close">
             ×
           </button>
-        </div>
+        </header>
 
-        <p className="text-ink-muted text-sm leading-relaxed mb-4">
-          Describe what you need. Cyder maps you to real projects and skills on this page — then
-          highlights them live.
+        <p className="text-ink-muted text-sm leading-relaxed mb-5">
+          Tell me the problem — not the tech. I&apos;ll point to work on this site that&apos;s closest to
+          what you&apos;re trying to do, and light them up.
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="compass-modes mb-4">
           {MODES.map((m) => (
             <button
               key={m.id}
               type="button"
               onClick={() => setMode(m.id)}
-              className={`cyder-mode-btn ${mode === m.id ? 'is-active' : ''}`}
+              className={`compass-mode ${mode === m.id ? 'is-active' : ''}`}
             >
               <span className="font-mono text-[10px] uppercase tracking-wider">{m.label}</span>
               <span className="text-[10px] text-ink-muted">{m.hint}</span>
@@ -181,7 +166,7 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
           ))}
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-3">
+        <div className="flex flex-wrap gap-2 mb-4">
           {PROMPTS[mode].map((p) => (
             <button
               key={p}
@@ -190,75 +175,88 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
                 setMessage(p);
                 runMatch(p);
               }}
-              className="cyder-chip"
+              className="compass-chip"
             >
               {p}
             </button>
           ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="mb-4">
-          <label className="sr-only" htmlFor="cyder-input">
-            Describe your need
+        <form onSubmit={handleSubmit}>
+          <label className="sr-only" htmlFor="compass-input">
+            Describe what you need
           </label>
           <textarea
-            id="cyder-input"
+            id="compass-input"
             ref={inputRef}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
             maxLength={500}
-            placeholder="e.g. I need a fintech PWA with Supabase and offline support…"
-            className="forge-input w-full resize-none min-h-[88px]"
+            placeholder="e.g. My church choir needs a way to practice solfa on their phones…"
+            className="brief-input w-full resize-none min-h-[88px]"
           />
           <button
             type="submit"
             disabled={loading || message.trim().length < 4}
             className="btn-stamp btn-stamp-paper w-full justify-center mt-3 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Matching…' : 'Run Cyder Match →'}
+            {loading ? 'Looking…' : 'Show me the fit →'}
           </button>
         </form>
 
         {error && (
-          <p className="font-mono text-[11px] text-orange-soft border border-orange/30 bg-orange/10 p-3 mb-4">
+          <p className="font-mono text-[11px] text-orange-soft border border-orange/30 bg-orange/10 p-3 mt-4 mb-0">
             {error}
           </p>
         )}
 
         {loading && (
-          <div className="cyder-thinking space-y-2" aria-live="polite">
-            <div className="font-mono text-[10px] uppercase tracking-widest text-ink-muted">
-              Scanning portfolio…
+          <div className="compass-loading mt-5" aria-live="polite">
+            <div className="compass-loading-track">
+              <div className="compass-loading-bar" />
             </div>
-            <div className="h-2 bg-ink/10 overflow-hidden">
-              <div className="cyder-thinking-bar h-full bg-orange/60" />
-            </div>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-ink-muted mt-2 mb-0">
+              Reading your brief against my work…
+            </p>
           </div>
         )}
 
         {match && !loading && (
-          <div className="cyder-result space-y-4">
-            <div className="flex gap-4 items-start">
-              <FitRing score={match.fitScore} active />
-              <div className="min-w-0">
-                <p className="text-sm text-ink leading-relaxed m-0">{match.pitch}</p>
-                {latencyMs != null && (
-                  <p className="font-mono text-[9px] uppercase tracking-wider text-ink-muted mt-2 mb-0">
-                    {latencyMs}ms · Groq inference
-                  </p>
-                )}
-              </div>
+          <div className="compass-result mt-5">
+            <div className="compass-verdict">
+              <span className="compass-verdict-label font-mono">{fitLabel(match.fitScore)}</span>
+              <p className="text-sm text-ink leading-relaxed m-0">{match.pitch}</p>
             </div>
 
+            {match.matchedProjects?.length > 0 && (
+              <div className="mt-4">
+                <div className="font-mono text-[10px] uppercase tracking-wider text-orange-soft mb-2">
+                  Closest work on this page
+                </div>
+                <ul className="compass-projects m-0 p-0 list-none">
+                  {match.matchedProjects.map((id, i) => (
+                    <li key={id} className="compass-project-card" style={{ animationDelay: `${i * 80}ms` }}>
+                      <span className="font-mono text-[9px] text-blue uppercase">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <span className="font-display font-bold text-sm uppercase">
+                        {PROJECT_NAMES[id] || id}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {match.matchedSkills?.length > 0 && (
-              <div>
+              <div className="mt-4">
                 <div className="font-mono text-[10px] uppercase tracking-wider text-blue mb-2">
-                  Matched skills
+                  Relevant skills
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {match.matchedSkills.map((s) => (
-                    <span key={s} className="cyder-skill-tag">
+                    <span key={s} className="compass-skill">
                       {s}
                     </span>
                   ))}
@@ -266,9 +264,16 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
               </div>
             )}
 
-            <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={scrollToProjects} className="btn-stamp !py-2.5 !px-4 !text-[11px]">
-                See projects →
+            <div className="flex flex-wrap gap-2 mt-5">
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="btn-stamp !py-2.5 !px-4 !text-[11px]"
+              >
+                See highlighted work →
               </button>
               <button
                 type="button"
@@ -278,7 +283,7 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
                 }}
                 className="btn-stamp btn-stamp-outline !py-2.5 !px-4 !text-[11px]"
               >
-                {match.nextAction || 'Contact'}
+                {match.nextAction || 'Get in touch'}
               </button>
             </div>
           </div>
@@ -288,8 +293,8 @@ const CyderConcierge = ({ onMatch, onOpenContact }) => {
       {open && (
         <button
           type="button"
-          className="cyder-backdrop"
-          aria-label="Close Cyder panel"
+          className="compass-backdrop"
+          aria-label="Close project finder"
           onClick={() => setOpen(false)}
         />
       )}

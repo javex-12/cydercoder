@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const stats = [
   { label: 'Live projects', value: 10, suffix: '+' },
-  { label: 'AI products shipped', value: 2, suffix: '' },
-  { label: 'Focus stack', value: null, display: 'React · AI · WebGL' },
+  { label: 'Products shipped', value: 2, suffix: '' },
+  { label: 'Focus stack', value: null, display: 'React · Motion · Web' },
   { label: 'Based in', value: null, display: 'Lagos · UTC+1' },
 ];
 

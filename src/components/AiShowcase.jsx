@@ -13,47 +13,38 @@ const SEEDS = [
     id: 'handoff',
     label: 'Design handoff',
     idea:
-      'Designers dump Figma links and messy notes; engineers get a structured build packet: component inventory, states, edge cases, and open questions — not another AI that rewrites copy.',
+      'Designers dump Figma links and messy notes; engineers get a structured build packet: component inventory, states, edge cases, and open questions.',
     audience: 'Product teams of 3–12',
     constraint: 'Read-only Figma URLs + pasted notes. No design-system generator fantasy.',
   },
   {
-    id: 'ops',
-    label: 'Ops triage',
+    id: 'triage',
+    label: 'Support triage',
     idea:
-      'Internal tool that turns messy Slack/support dumps into a ranked incident board: severity, owner, blast radius, and the single next action — not a chatbot in a channel.',
+      'Internal tool that turns messy Slack/support dumps into a ranked incident board: severity, owner, blast radius, and the single next action.',
     audience: 'SaaS support + eng leads',
-    constraint: 'Pasted text only for MVP. Must be auditable (no silent AI decisions).',
+    constraint: 'Pasted text only for MVP. Every decision must be auditable.',
   },
 ];
 
 const STAGES = [
-  { id: 'scan', label: 'Scan idea' },
-  { id: 'kill', label: 'Cut scope' },
-  { id: 'arch', label: 'Map system' },
-  { id: 'stack', label: 'Pick stack' },
-  { id: 'ship', label: 'Ship plan' },
-  { id: 'risk', label: 'Risk pass' },
+  { id: 'read', label: 'Read idea' },
+  { id: 'cut', label: 'Cut fat' },
+  { id: 'map', label: 'Draw map' },
+  { id: 'stack', label: 'Pick tools' },
+  { id: 'plan', label: 'Plan build' },
+  { id: 'check', label: 'Sanity check' },
 ];
 
-function NeuralCanvas() {
+function HalftoneWash() {
   const ref = useRef(null);
 
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return undefined;
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ctx = canvas.getContext('2d');
     let raf = 0;
     let alive = true;
-
-    const nodes = Array.from({ length: 32 }, () => ({
-      x: Math.random(),
-      y: Math.random(),
-      vx: (Math.random() - 0.5) * 0.0004,
-      vy: (Math.random() - 0.5) * 0.0004,
-      r: 1.1 + Math.random() * 1.7,
-    }));
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -63,54 +54,24 @@ function NeuralCanvas() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    const draw = () => {
+    const draw = (t) => {
       if (!alive) return;
       const { width, height } = canvas.getBoundingClientRect();
       ctx.clearRect(0, 0, width, height);
-
-      if (!prefersReduced) {
-        nodes.forEach((n) => {
-          n.x += n.vx;
-          n.y += n.vy;
-          if (n.x < 0 || n.x > 1) n.vx *= -1;
-          if (n.y < 0 || n.y > 1) n.vy *= -1;
-        });
-      }
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i];
-          const b = nodes[j];
-          const dx = (a.x - b.x) * width;
-          const dy = (a.y - b.y) * height;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 95) {
-            const alpha = (1 - dist / 95) * 0.32;
-            ctx.strokeStyle = `rgba(212, 101, 58, ${alpha})`;
-            ctx.beginPath();
-            ctx.moveTo(a.x * width, a.y * height);
-            ctx.lineTo(b.x * width, b.y * height);
-            ctx.stroke();
-          }
+      const step = 11;
+      for (let y = 0; y < height; y += step) {
+        for (let x = 0; x < width; x += step) {
+          const n = 0.5 + 0.5 * Math.sin(x * 0.04 + t * 0.0008 + y * 0.03);
+          if (n < 0.62) continue;
+          ctx.fillStyle = `rgba(212, 101, 58, ${0.04 + n * 0.06})`;
+          ctx.fillRect(x, y, 2, 2);
         }
       }
-
-      nodes.forEach((n, idx) => {
-        const pulse = prefersReduced ? 1 : 0.7 + 0.3 * Math.sin(Date.now() / 700 + idx);
-        ctx.fillStyle =
-          idx % 4 === 0
-            ? `rgba(138, 176, 232, ${0.55 * pulse})`
-            : `rgba(232, 160, 122, ${0.7 * pulse})`;
-        ctx.beginPath();
-        ctx.arc(n.x * width, n.y * height, n.r * pulse, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
       raf = requestAnimationFrame(draw);
     };
 
     resize();
-    draw();
+    draw(0);
     window.addEventListener('resize', resize);
     return () => {
       alive = false;
@@ -119,13 +80,7 @@ function NeuralCanvas() {
     };
   }, []);
 
-  return (
-    <canvas
-      ref={ref}
-      className="ai-neural absolute inset-0 w-full h-full pointer-events-none opacity-60"
-      aria-hidden="true"
-    />
-  );
+  return <canvas ref={ref} className="brief-wash absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />;
 }
 
 function Severity({ level }) {
@@ -142,7 +97,7 @@ function Severity({ level }) {
 function Panel({ title, kicker, children, show, delay = 0 }) {
   return (
     <article
-      className={`forge-panel border border-ink/12 bg-paper/50 p-4 sm:p-5 ${show ? 'is-in' : ''}`}
+      className={`brief-panel border border-ink/12 bg-paper/50 p-4 sm:p-5 ${show ? 'is-in' : ''}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {kicker && (
@@ -168,7 +123,7 @@ const AiShowcase = () => {
   const [revealStep, setRevealStep] = useState(0);
   const abortRef = useRef(null);
 
-  // Fake compile stages while waiting on Groq (UX only)
+  // Progress steps while the brief is being written
   useEffect(() => {
     if (status !== 'running') return undefined;
     setStageIdx(0);
@@ -203,7 +158,7 @@ const AiShowcase = () => {
     setError('');
   };
 
-  const forge = async () => {
+  const runBrief = async () => {
     if (status === 'running') return;
     setError('');
     setBrief(null);
@@ -236,7 +191,7 @@ const AiShowcase = () => {
       setStatus('error');
       setError(
         err?.message ||
-          'Ship Forge could not reach the API. On Vercel, set GROQ_API_KEY in Environment Variables.'
+          'Scope desk is unavailable right now. Try again in a moment.'
       );
     }
   };
@@ -251,14 +206,14 @@ const AiShowcase = () => {
             className="reveal-item font-mono text-[11px] uppercase tracking-[0.14em] text-orange-soft mb-2"
             data-reveal
           >
-            Live · Groq LLM · not a chatbot
+            Interactive demo · how I scope work
           </p>
           <h2
             id="ai-heading"
             className="section-title reveal-item font-display font-black text-[clamp(2.5rem,8vw,3rem)] uppercase leading-[0.9]"
             data-reveal
           >
-            Ship Forge
+            Scope Desk
           </h2>
         </div>
         <p
@@ -271,8 +226,8 @@ const AiShowcase = () => {
         </p>
       </div>
 
-      <div className="ai-stage reveal-item relative overflow-hidden border border-ink/15 bg-surface" data-reveal>
-        <NeuralCanvas />
+      <div className="brief-stage reveal-item relative overflow-hidden border border-ink/15 bg-surface" data-reveal>
+        <HalftoneWash />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)]">
           {/* ── Input forge ─────────────────────────────────────── */}
@@ -308,7 +263,7 @@ const AiShowcase = () => {
                 }}
                 rows={5}
                 maxLength={900}
-                className="forge-input w-full resize-y min-h-[120px]"
+                className="brief-input w-full resize-y min-h-[120px]"
                 placeholder="Describe the product problem — not a slogan."
               />
             </label>
@@ -323,7 +278,7 @@ const AiShowcase = () => {
                   value={audience}
                   onChange={(e) => setAudience(e.target.value)}
                   maxLength={280}
-                  className="forge-input w-full"
+                  className="brief-input w-full"
                   placeholder="Who pays / who uses"
                 />
               </label>
@@ -336,7 +291,7 @@ const AiShowcase = () => {
                   value={constraint}
                   onChange={(e) => setConstraint(e.target.value)}
                   maxLength={280}
-                  className="forge-input w-full"
+                  className="brief-input w-full"
                   placeholder="Time, budget, no-go tech"
                 />
               </label>
@@ -344,16 +299,16 @@ const AiShowcase = () => {
 
             <button
               type="button"
-              onClick={forge}
+              onClick={runBrief}
               disabled={status === 'running' || idea.trim().length < 12}
               className="btn-stamp btn-stamp-paper w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {status === 'running' ? 'Forging brief…' : 'Run Ship Forge →'}
+              {status === 'running' ? 'Writing brief…' : 'Generate brief →'}
             </button>
 
             <div className="mt-5">
               <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted mb-2">
-                Compile stages
+                Progress
               </div>
               <ol className="grid grid-cols-2 sm:grid-cols-3 gap-2 list-none m-0 p-0">
                 {STAGES.map((s, i) => {
@@ -366,7 +321,7 @@ const AiShowcase = () => {
                         on
                           ? 'border-orange/40 text-ink bg-orange/10'
                           : 'border-ink/10 text-ink-muted'
-                      } ${current ? 'forge-stage-live' : ''}`}
+                      } ${current ? 'brief-stage-live' : ''}`}
                     >
                       <span className="text-orange-soft mr-1">{String(i + 1).padStart(2, '0')}</span>
                       {s.label}
@@ -383,8 +338,7 @@ const AiShowcase = () => {
             )}
 
             <p className="mt-4 font-mono text-[10px] text-ink-muted leading-relaxed">
-              Powered by Groq on the server. Your key never touches the browser. Rate-limited for
-              demo safety.
+              Same structured output I use on client calls — problem, cuts, architecture, timeline, risks.
             </p>
           </div>
 
@@ -396,13 +350,13 @@ const AiShowcase = () => {
                   Output · engineering brief
                 </div>
                 <p className="font-display font-black text-3xl sm:text-4xl uppercase leading-[0.9] text-ink max-w-sm">
-                  Not a chat.
+                  Your idea,
                   <br />
-                  A build packet.
+                  scoped properly.
                 </p>
                 <p className="text-ink-muted text-sm max-w-md leading-relaxed">
-                  Pick a seed or paste your own idea, then run the forge. You get architecture,
-                  stack tradeoffs, and a ship plan — the same rigor I use on client work.
+                  Pick a sample or paste your own. You get architecture, stack tradeoffs, and a
+                  realistic build plan — the way I actually work with clients.
                 </p>
               </div>
             )}
@@ -412,10 +366,10 @@ const AiShowcase = () => {
                 <div className="flex items-center gap-2">
                   <span className="ai-pulse w-2 h-2 rounded-full bg-orange" />
                   <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted">
-                    Compiling with Groq · {STAGES[Math.max(0, stageIdx)]?.label}
+                    {STAGES[Math.max(0, stageIdx)]?.label}…
                   </span>
                 </div>
-                <div className="forge-skeleton space-y-3">
+                <div className="brief-skeleton space-y-3">
                   <div className="h-3 w-2/5 bg-ink/10" />
                   <div className="h-8 w-4/5 bg-ink/10" />
                   <div className="h-24 w-full bg-ink/5 border border-ink/10" />
@@ -430,14 +384,12 @@ const AiShowcase = () => {
             {status === 'error' && !brief && (
               <div className="h-full flex flex-col justify-center gap-3 py-10">
                 <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-orange-soft">
-                  Forge failed
+                  Brief unavailable
                 </div>
                 <p className="text-ink text-sm leading-relaxed max-w-md">
-                  {error || 'Something went wrong.'} Check that{' '}
-                  <code className="text-orange-soft">GROQ_API_KEY</code> is set in Vercel, then
-                  redeploy.
+                  {error || 'Something went wrong.'}
                 </p>
-                <button type="button" onClick={forge} className="btn-stamp btn-stamp-outline !py-2.5 !px-4 !text-[11px] w-fit">
+                <button type="button" onClick={runBrief} className="btn-stamp btn-stamp-outline !py-2.5 !px-4 !text-[11px] w-fit">
                   Retry
                 </button>
               </div>
@@ -446,7 +398,7 @@ const AiShowcase = () => {
             {brief && status === 'done' && (
               <div className="space-y-3">
                 <div
-                  className={`forge-panel border border-orange/30 bg-orange/10 p-4 sm:p-5 ${show(1) ? 'is-in' : ''}`}
+                  className={`brief-panel border border-orange/30 bg-orange/10 p-4 sm:p-5 ${show(1) ? 'is-in' : ''}`}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -459,10 +411,10 @@ const AiShowcase = () => {
                     </div>
                     <button
                       type="button"
-                      onClick={forge}
+                      onClick={runBrief}
                       className="font-mono text-[10px] uppercase tracking-wider border border-ink/25 px-3 py-1.5 hover:border-ink text-ink bg-transparent cursor-pointer"
                     >
-                      Re-forge
+                      Run again
                     </button>
                   </div>
                   <p className="mt-3 text-sm text-ink/90 leading-relaxed">{brief.one_liner}</p>
@@ -506,7 +458,7 @@ const AiShowcase = () => {
                     {modules.map((m) => (
                       <div
                         key={m.id || m.name}
-                        className="forge-module border border-ink/15 bg-surface px-3 py-2 min-w-[7.5rem]"
+                        className="brief-module border border-ink/15 bg-surface px-3 py-2 min-w-[7.5rem]"
                       >
                         <div className="font-mono text-[9px] uppercase tracking-wider text-orange-soft mb-0.5">
                           {m.id || 'module'}
@@ -534,7 +486,7 @@ const AiShowcase = () => {
                       {[
                         ['Frontend', brief.stack?.frontend],
                         ['Backend', brief.stack?.backend],
-                        ['AI', brief.stack?.ai],
+                        ['Smart layer', brief.stack?.ai],
                         ['Data', brief.stack?.data],
                       ].map(([k, v]) => (
                         <div key={k} className="border-b border-ink/10 pb-2">
@@ -585,10 +537,10 @@ const AiShowcase = () => {
                 </Panel>
 
                 <div
-                  className={`forge-panel border border-ink/12 bg-surface p-4 sm:p-5 ${show(8) ? 'is-in' : ''}`}
+                  className={`brief-panel border border-ink/12 bg-surface p-4 sm:p-5 ${show(8) ? 'is-in' : ''}`}
                 >
                   <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-blue mb-2">
-                    MVP slice · anti-gimmick
+                    MVP slice · keep it honest
                   </div>
                   <p className="text-[13px] text-ink-muted leading-relaxed mb-3">{brief.mvp_scope}</p>
                   <p className="text-[13px] text-ink leading-relaxed mb-4">{brief.anti_gimmick}</p>
@@ -608,15 +560,15 @@ const AiShowcase = () => {
         {[
           {
             k: 'What this proves',
-            v: 'I wire real LLM APIs into product workflows — structured outputs, server keys, rate limits.',
+            v: 'I turn messy ideas into build packets — scope, architecture, timeline, risks — not vague advice.',
           },
           {
             k: 'What this is not',
-            v: 'Not a chat toy. Not dialect cosplay. A scoped engineering brief generator.',
+            v: 'Not a chat window. Not a pitch deck generator. A practical brief you could actually build from.',
           },
           {
-            k: 'Want this in your product?',
-            v: 'I ship AI features with guardrails, streaming UX, and boring-reliable backends.',
+            k: 'Want this on your product?',
+            v: 'I build smart features with guardrails, clear UX, and backends that don\'t fall over.',
           },
         ].map((card, i) => (
           <div

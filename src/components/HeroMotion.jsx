@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
 /**
- * Three.js wireframe hero — mouse-reactive, pauses off-screen / hidden tab.
- * Lazy-loaded Three chunk; respects prefers-reduced-motion.
+ * Riso misprint halftone — stencil letterforms with registration drift.
+ * Matches the portfolio's print/stamp identity. 2D canvas only — no 3D clichés.
  */
 const HeroMotion = () => {
   const canvasRef = useRef(null);
@@ -12,133 +12,163 @@ const HeroMotion = () => {
     if (!canvas) return undefined;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) return undefined;
+    const parent = canvas.parentElement;
+    if (!parent) return undefined;
 
-    let disposed = false;
+    const ctx = canvas.getContext('2d');
     let raf = 0;
+    let alive = true;
     let visible = true;
-    let mx = 0;
-    let my = 0;
-    let renderer;
-    let mesh;
-    let scene;
-    let camera;
+    let mx = 0.5;
+    let my = 0.5;
+    let wipe = 0;
+    let densityMap = null;
+    let cols = 0;
+    let rows = 0;
+    let cell = 7;
 
-    const boot = async () => {
-      const THREE = await import('three');
-      if (disposed) return;
+    const GLYPHS = ['{', '}', '</', '/>', '01', '·', '▸', '◆'];
 
-      const parent = canvas.parentElement;
-      if (!parent) return;
+    const buildMap = (w, h) => {
+      const off = document.createElement('canvas');
+      off.width = w;
+      off.height = h;
+      const octx = off.getContext('2d');
+      octx.fillStyle = '#000';
+      octx.fillRect(0, 0, w, h);
 
-      renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: true,
-        antialias: true,
-        powerPreference: 'high-performance',
+      const fontSize = Math.min(w * 0.34, h * 0.55);
+      octx.font = `900 ${fontSize}px "Big Shoulders Stencil Display", Impact, sans-serif`;
+      octx.textAlign = 'center';
+      octx.textBaseline = 'middle';
+      octx.fillStyle = '#fff';
+      octx.fillText('CYDER', w * 0.52, h * 0.46);
+
+      octx.font = `700 ${fontSize * 0.22}px "Martian Mono", monospace`;
+      octx.fillText('CODER', w * 0.52, h * 0.62);
+
+      GLYPHS.forEach((g, i) => {
+        octx.font = `600 ${12 + (i % 3) * 4}px "Martian Mono", monospace`;
+        octx.fillText(g, (w * 0.08) + (i % 4) * (w * 0.22), h * 0.12 + Math.floor(i / 4) * (h * 0.18));
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
 
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-      camera.position.z = 4.2;
+      const data = octx.getImageData(0, 0, w, h).data;
+      cols = Math.ceil(w / cell);
+      rows = Math.ceil(h / cell);
+      const map = new Float32Array(cols * rows);
 
-      mesh = new THREE.Mesh(
-        new THREE.IcosahedronGeometry(2.1, 1),
-        new THREE.MeshPhongMaterial({
-          color: 0xd4653a,
-          wireframe: true,
-          transparent: true,
-          opacity: 0.28,
-          shininess: 90,
-        })
-      );
-      scene.add(mesh);
-
-      const inner = new THREE.Mesh(
-        new THREE.IcosahedronGeometry(1.35, 0),
-        new THREE.MeshBasicMaterial({
-          color: 0x8ab0e8,
-          wireframe: true,
-          transparent: true,
-          opacity: 0.12,
-        })
-      );
-      mesh.add(inner);
-
-      scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-      const point = new THREE.PointLight(0xd4653a, 1.8);
-      point.position.set(8, 6, 10);
-      scene.add(point);
-
-      const onMove = (e) => {
-        mx = (e.clientX / window.innerWidth - 0.5) * 2;
-        my = (e.clientY / window.innerHeight - 0.5) * 2;
-      };
-
-      const onVis = () => {
-        visible = document.visibilityState === 'visible';
-      };
-
-      const resize = () => {
-        const r = parent.getBoundingClientRect();
-        renderer.setSize(r.width, r.height, false);
-        camera.aspect = r.width / Math.max(r.height, 1);
-        camera.updateProjectionMatrix();
-      };
-
-      const io = new IntersectionObserver(
-        ([entry]) => {
-          visible = entry.isIntersecting && document.visibilityState === 'visible';
-        },
-        { threshold: 0.05 }
-      );
-      io.observe(parent);
-
-      const animate = () => {
-        if (disposed) return;
-        raf = requestAnimationFrame(animate);
-        if (visible) {
-          mesh.rotation.y += 0.0025;
-          mesh.rotation.x += 0.0012;
-          mesh.rotation.x += my * 0.0018;
-          mesh.rotation.y += mx * 0.0018;
-          inner.rotation.y -= 0.004;
-          inner.rotation.x -= 0.002;
-          renderer.render(scene, camera);
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const px = Math.min(w - 1, x * cell + cell / 2);
+          const py = Math.min(h - 1, y * cell + cell / 2);
+          const idx = (py * w + px) * 4;
+          map[y * cols + x] = data[idx] / 255;
         }
-      };
-
-      window.addEventListener('mousemove', onMove, { passive: true });
-      window.addEventListener('resize', resize);
-      document.addEventListener('visibilitychange', onVis);
-      resize();
-      animate();
-
-      return () => {
-        window.removeEventListener('mousemove', onMove);
-        window.removeEventListener('resize', resize);
-        document.removeEventListener('visibilitychange', onVis);
-        io.disconnect();
-      };
+      }
+      densityMap = map;
     };
 
-    let cleanupScene;
-    boot().then((fn) => {
-      cleanupScene = fn;
-    });
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const { width, height } = parent.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.floor(width * dpr));
+      canvas.height = Math.max(1, Math.floor(height * dpr));
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      buildMap(width, height);
+    };
+
+    const drawLayer = (w, h, ox, oy, color, t) => {
+      if (!densityMap) return;
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const d = densityMap[y * cols + x];
+          if (d < 0.08) continue;
+
+          const nx = x / cols;
+          const ny = y / rows;
+          const dist = Math.hypot(nx - mx, ny - my);
+          const ripple = reduced ? 0 : Math.sin(dist * 14 - t * 0.002) * 0.15 * (1 - Math.min(dist, 1));
+          const radius = (cell * 0.22 + d * cell * 0.38) * (1 + ripple);
+
+          const px = x * cell + cell / 2 + ox;
+          const py = y * cell + cell / 2 + oy;
+
+          if (py < wipe) continue;
+
+          ctx.beginPath();
+          ctx.arc(px, py, radius, 0, Math.PI * 2);
+          ctx.fillStyle = color;
+          ctx.fill();
+        }
+      }
+    };
+
+    const draw = (t) => {
+      if (!alive) return;
+      raf = requestAnimationFrame(draw);
+      if (!visible || !densityMap) return;
+
+      const { width: w, height: h } = parent.getBoundingClientRect();
+      ctx.clearRect(0, 0, w, h);
+
+      const driftX = (mx - 0.5) * 18;
+      const driftY = (my - 0.5) * 12;
+      const pulse = reduced ? 0 : Math.sin(t * 0.0012) * 1.5;
+
+      if (!reduced) {
+        wipe += 0.35;
+        if (wipe > h + 40) wipe = -30;
+      }
+
+      drawLayer(w, h, driftX * 0.6 + pulse, driftY * 0.4, 'rgba(138, 176, 232, 0.38)', t);
+      drawLayer(w, h, -driftX * 0.9 - 2, driftY * 0.7 + 1.5, 'rgba(212, 101, 58, 0.52)', t);
+      drawLayer(w, h, driftX * 0.3 + 3, -driftY * 0.5 - 1, 'rgba(242, 239, 232, 0.14)', t);
+
+      if (!reduced && wipe > 0) {
+        ctx.fillStyle = 'rgba(10, 9, 8, 0.55)';
+        ctx.fillRect(0, 0, w, wipe);
+        ctx.fillStyle = 'rgba(212, 101, 58, 0.85)';
+        ctx.fillRect(0, wipe, w, 2);
+      }
+
+      ctx.strokeStyle = 'rgba(212, 101, 58, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(10, 10, w - 20, h - 20);
+    };
+
+    const onMove = (e) => {
+      const r = parent.getBoundingClientRect();
+      mx = (e.clientX - r.left) / r.width;
+      my = (e.clientY - r.top) / r.height;
+    };
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting && document.visibilityState === 'visible';
+      },
+      { threshold: 0.05 }
+    );
+
+    const onVis = () => {
+      visible = document.visibilityState === 'visible';
+    };
+
+    resize();
+    raf = requestAnimationFrame(draw);
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('visibilitychange', onVis);
+    io.observe(parent);
 
     return () => {
-      disposed = true;
+      alive = false;
       cancelAnimationFrame(raf);
-      cleanupScene?.();
-      mesh?.geometry?.dispose();
-      mesh?.material?.dispose();
-      mesh?.children?.forEach((c) => {
-        c.geometry?.dispose();
-        c.material?.dispose();
-      });
-      renderer?.dispose();
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMove);
+      document.removeEventListener('visibilitychange', onVis);
+      io.disconnect();
     };
   }, []);
 
