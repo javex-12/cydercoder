@@ -32,16 +32,16 @@ const skillCategories = [
 ];
 
 const projectData = [
-  { id: '01', title: 'SwiftLink Pro', type: 'Commerce', desc: 'Turn WhatsApp chats into a proper online storefront in about a minute. Built for businesses that sell where their customers already are.', url: 'https://swiftlinkpro.vercel.app/', tags: ['Next.js', 'WhatsApp API', 'Commerce'], isPremium: true },
-  { id: '02', title: 'BioByte Pro', type: 'Education', desc: 'A WAEC Biology practice app with 120+ modules, progress tracking, and the kind of feedback students actually need before exam day.', url: 'https://biobyte.vercel.app/', tags: ['React', 'LMS', 'PWA'], isPremium: true },
-  { id: '03', title: 'Chaotic Shift', type: 'AI / Play', desc: 'A playful web app that pairs Google Gemini with physics-y UI — part experiment, part useful tool.', url: 'https://cyswitch.vercel.app/', tags: ['Gemini AI', 'Framer', 'React'], isPremium: true },
-  { id: '04', title: 'Naija Bot AI', type: 'AI assistant', desc: 'An AI chat buddy that gets Nigerian context — tone, slang, and local problems — not just generic English answers.', url: 'https://naija-bot.vercel.app/', tags: ['OpenAI', 'NLP', 'Vite'], isPremium: true },
-  { id: '05', title: 'Loading Systems', type: 'UI kit', desc: 'A set of polished loading animations and motion bits you can drop into serious products without looking cheap.', url: 'https://loading-screen-1.vercel.app/', tags: ['GSAP', 'SVG', 'Motion'], isPremium: true },
-  { id: '06', title: 'Cydemy', type: 'Education', desc: 'A learning platform shaped for engineering and design courses — less clutter, more focus on the work.', url: 'https://cydemy.vercel.app/', tags: ['Next.js', 'LMS', 'Tailwind'], isPremium: true },
-  { id: '07', title: 'Adex Concerns', type: 'Business', desc: 'A clean company site and ops showcase for a professional services brand. Straight, credible, no fluff.', url: 'https://adexconcerns.vercel.app/', tags: ['Business', 'React', 'Corporate'], isPremium: true },
-  { id: '08', title: 'AjoSafe', type: 'Fintech', desc: 'Digital thrift (Ajo) circles with automatic cycles, live sync, and security you’d actually trust with money.', url: 'https://ajosafe.vercel.app/', tags: ['PWA', 'Supabase', 'Fintech'], isPremium: false },
-  { id: '09', title: 'CySolfa', type: 'Music', desc: 'Learn Tonic Solfa with interactive practice — for choirs, students, and anyone who hears music better than they read it.', url: 'https://cysolfa.vercel.app/', tags: ['Audio API', 'React', 'Education'], isPremium: false },
-  { id: '10', title: 'Edumati', type: 'Resources', desc: 'A simple hub for school materials — easy to browse, easy to manage when the file pile gets out of hand.', url: 'https://edumati.vercel.app/', tags: ['Resources', 'Vite', 'Dashboard'], isPremium: false },
+  { id: '01', title: 'Doorstep', type: 'Utility / P2P', desc: 'Instant offline file sharing between phone and computer. Pair once with a QR code, drop files into a folder, and receive them automatically with zero cloud, internet, or account required.', url: 'https://javex-12.github.io/Doorstep/', githubUrl: 'https://github.com/javex-12/Doorstep.git', tags: ['P2P File Transfer', 'QR Sync', 'Android & Windows'], isPremium: true },
+  { id: '02', title: 'SwiftLink Pro', type: 'Commerce', desc: 'Turn WhatsApp chats into a proper online storefront in about a minute. Built for businesses that sell where their customers already are.', url: 'https://swiftlinkpro.vercel.app/', tags: ['Next.js', 'WhatsApp API', 'Commerce'], isPremium: true },
+  { id: '03', title: 'BioByte Pro', type: 'Education', desc: 'A WAEC Biology practice app with 120+ modules, progress tracking, and the kind of feedback students actually need before exam day.', url: 'https://biobyte.vercel.app/', tags: ['React', 'LMS', 'PWA'], isPremium: true },
+  { id: '04', title: 'Chaotic Shift', type: 'AI / Play', desc: 'A playful web app that pairs Google Gemini with physics-y UI — part experiment, part useful tool.', url: 'https://cyswitch.vercel.app/', tags: ['Gemini AI', 'Framer', 'React'], isPremium: true },
+  { id: '05', title: 'Naija Bot AI', type: 'AI assistant', desc: 'An AI chat buddy that gets Nigerian context — tone, slang, and local problems — not just generic English answers.', url: 'https://naija-bot.vercel.app/', tags: ['OpenAI', 'NLP', 'Vite'], isPremium: true },
+  { id: '06', title: 'Loading Systems', type: 'UI kit', desc: 'A set of polished loading animations and motion bits you can drop into serious products without looking cheap.', url: 'https://loading-screen-1.vercel.app/', tags: ['GSAP', 'SVG', 'Motion'], isPremium: true },
+  { id: '07', title: 'Cydemy', type: 'Education', desc: 'A learning platform shaped for engineering and design courses — less clutter, more focus on the work.', url: 'https://cydemy.vercel.app/', tags: ['Next.js', 'LMS', 'Tailwind'], isPremium: true },
+  { id: '08', title: 'Adex Concerns', type: 'Business', desc: 'A clean company site and ops showcase for a professional services brand. Straight, credible, no fluff.', url: 'https://adexconcerns.vercel.app/', tags: ['Business', 'React', 'Corporate'], isPremium: true },
+  { id: '09', title: 'AjoSafe', type: 'Fintech', desc: 'Digital thrift (Ajo) circles with automatic cycles, live sync, and security you’d actually trust with money.', url: 'https://ajosafe.vercel.app/', tags: ['PWA', 'Supabase', 'Fintech'], isPremium: false },
+  { id: '10', title: 'CySolfa', type: 'Music', desc: 'Learn Tonic Solfa with interactive practice — for choirs, students, and anyone who hears music better than they read it.', url: 'https://cysolfa.vercel.app/', tags: ['Audio API', 'React', 'Education'], isPremium: false },
 ];
 
 const metaCards = [
@@ -551,6 +551,16 @@ const App = () => {
                         >
                           Live site ↗
                         </a>
+                        {proj.githubUrl && (
+                          <a
+                            href={proj.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-mono text-[10px] uppercase tracking-wider border border-blue/40 text-blue px-3 py-1.5 no-underline hover:bg-blue/10"
+                          >
+                            GitHub repo ↗
+                          </a>
+                        )}
                       </div>
                     </div>
                     <button
