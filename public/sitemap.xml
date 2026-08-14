@@ -4,8 +4,8 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://cydercoder.vercel.app/</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://cydercoder.vercel.app/" />
     <xhtml:link rel="alternate" hreflang="en-NG" href="https://cydercoder.vercel.app/" />
@@ -15,5 +15,11 @@
       <image:title>Dosumu Michael (CyderCoder) — Full-Stack Developer Portfolio</image:title>
       <image:caption>Portfolio of Dosumu Michael, full-stack developer and creative engineer in Lagos, Nigeria</image:caption>
     </image:image>
+  </url>
+  <url>
+    <loc>https://javex-12.github.io/Doorstep/</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
 </urlset>
