@@ -7,6 +7,8 @@ import HeroMotion from './components/HeroMotion';
 import HeroText from './components/HeroText';
 import { PROJECT_SLUGS } from './data/projectIds';
 import { useScrollReveal } from './hooks/useScrollReveal';
+import { AndroidStatusBar, QuickSettingsSheet } from './components/AndroidHeader';
+import { AndroidDockNav } from './components/AndroidDockNav';
 import './index.css';
 
 const CyderConcierge = lazy(() => import('./components/CyderConcierge'));
@@ -101,6 +103,15 @@ const App = () => {
   const [reloadKey, setReloadKey] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [highlightedProjects, setHighlightedProjects] = useState([]);
+  const [quickSettingsOpen, setQuickSettingsOpen] = useState(false);
+  const [themeMode, setThemeMode] = useState('dark');
+  const [activeSection, setActiveSection] = useState('top');
+
+  const toggleTheme = () => {
+    const newTheme = themeMode === 'dark' ? 'light' : 'dark';
+    setThemeMode(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
 
   const siteReady = !isLoading;
   useScrollReveal(siteReady);
@@ -137,6 +148,28 @@ const App = () => {
   return (
     <>
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+
+      {/* Android 16 Top Status Bar */}
+      {!isLoading && (
+        <header className="sticky top-0 z-[800] backdrop-blur-xl bg-[var(--android-dock-bg)] border-b border-[var(--android-border)] shadow-sm">
+          <AndroidStatusBar
+            onOpenSettings={() => setQuickSettingsOpen(true)}
+            themeMode={themeMode}
+            toggleTheme={toggleTheme}
+          />
+        </header>
+      )}
+
+      {/* Android 16 Quick Settings Sheet Drawer */}
+      <QuickSettingsSheet
+        isOpen={quickSettingsOpen}
+        onClose={() => setQuickSettingsOpen(false)}
+        themeMode={themeMode}
+        toggleTheme={toggleTheme}
+      />
+
+      {/* Android 16 Floating Dock Pill Navigation */}
+      {!isLoading && <AndroidDockNav activeSection={activeSection} />}
 
       <div className="crop tl" aria-hidden="true" />
       <div className="crop tr" aria-hidden="true" />

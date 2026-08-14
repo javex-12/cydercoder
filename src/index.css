@@ -3,18 +3,31 @@
 @tailwind utilities;
 
 :root {
-  /* Calm night palette — warm, not neon */
-  --paper: #121110;
-  --surface: #1C1A17;
-  --ink: #F2EFE8;       /* cream text — always light on dark */
-  --ink-muted: #B5AFA4;
-  --void: #0A0908;
-  --orange: #D4653A;
-  --orange-soft: #E8A07A;
-  --blue: #8AB0E8;
+  /* Android 16 Dynamic Expressive Palette — Dark (Default) */
+  --android-bg: #0d131a;
+  --android-on-bg: #e1e7f0;
+  --android-card-bg: rgba(23, 33, 44, 0.75);
+  --android-sheet-bg: #141c26;
+  --android-dock-bg: rgba(18, 26, 36, 0.85);
+  --android-pill-bg: rgba(30, 43, 58, 0.6);
+  --android-accent: #79a3ff;
+  --android-on-accent: #002b66;
+  --android-accent-muted: rgba(121, 163, 255, 0.15);
+  --android-border: rgba(255, 255, 255, 0.1);
+  --android-muted: #94a3b8;
 
-  --font-display: 'Big Shoulders Stencil Display', sans-serif;
-  --font-body: 'Hanken Grotesk', sans-serif;
+  /* Calm night legacy support */
+  --paper: #0d131a;
+  --surface: #141c26;
+  --ink: #e1e7f0;
+  --ink-muted: #94a3b8;
+  --void: #080c11;
+  --orange: #79a3ff;
+  --orange-soft: #a5c2ff;
+  --blue: #79a3ff;
+
+  --font-display: 'Hanken Grotesk', system-ui, sans-serif;
+  --font-body: 'Hanken Grotesk', system-ui, sans-serif;
   --font-mono: 'Martian Mono', monospace;
 
   --ease-guillotine: cubic-bezier(0.83, 0, 0.17, 1);
@@ -22,19 +35,44 @@
   color-scheme: dark;
 }
 
+[data-theme="light"] {
+  --android-bg: #f5f7fa;
+  --android-on-bg: #191c20;
+  --android-card-bg: rgba(255, 255, 255, 0.85);
+  --android-sheet-bg: #ffffff;
+  --android-dock-bg: rgba(255, 255, 255, 0.9);
+  --android-pill-bg: rgba(235, 240, 245, 0.9);
+  --android-accent: #2d60ff;
+  --android-on-accent: #ffffff;
+  --android-accent-muted: rgba(45, 96, 255, 0.12);
+  --android-border: rgba(0, 0, 0, 0.08);
+  --android-muted: #64748b;
+
+  --paper: #f5f7fa;
+  --surface: #ffffff;
+  --ink: #191c20;
+  --ink-muted: #64748b;
+  --void: #e2e8f0;
+  --orange: #2d60ff;
+  --orange-soft: #4d79ff;
+  --blue: #2d60ff;
+  color-scheme: light;
+}
+
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
-  background-color: #121110 !important;
+  background-color: var(--android-bg) !important;
 }
 
 html,
 body,
 #root {
   min-height: 100%;
-  background-color: #121110 !important;
-  background: #121110 !important;
-  color: #F2EFE8 !important;
+  background-color: var(--android-bg) !important;
+  background: var(--android-bg) !important;
+  color: var(--android-on-bg) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
