@@ -7,8 +7,7 @@ import HeroMotion from './components/HeroMotion';
 import HeroText from './components/HeroText';
 import { PROJECT_SLUGS } from './data/projectIds';
 import { useScrollReveal } from './hooks/useScrollReveal';
-import { AndroidStatusBar, QuickSettingsSheet } from './components/AndroidHeader';
-import { AndroidDockNav } from './components/AndroidDockNav';
+import { Navbar } from './components/Navbar';
 import './index.css';
 
 const CyderConcierge = lazy(() => import('./components/CyderConcierge'));
@@ -149,27 +148,14 @@ const App = () => {
     <>
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
 
-      {/* Android 16 Top Status Bar */}
       {!isLoading && (
-        <header className="sticky top-0 z-[800] backdrop-blur-xl bg-[var(--android-dock-bg)] border-b border-[var(--android-border)] shadow-sm">
-          <AndroidStatusBar
-            onOpenSettings={() => setQuickSettingsOpen(true)}
-            themeMode={themeMode}
-            toggleTheme={toggleTheme}
-          />
-        </header>
+        <Navbar
+          onOpenContact={() => setIsModalOpen(true)}
+          themeMode={themeMode}
+          toggleTheme={toggleTheme}
+          activeSection={activeSection}
+        />
       )}
-
-      {/* Android 16 Quick Settings Sheet Drawer */}
-      <QuickSettingsSheet
-        isOpen={quickSettingsOpen}
-        onClose={() => setQuickSettingsOpen(false)}
-        themeMode={themeMode}
-        toggleTheme={toggleTheme}
-      />
-
-      {/* Android 16 Floating Dock Pill Navigation */}
-      {!isLoading && <AndroidDockNav activeSection={activeSection} />}
 
       <div className="crop tl" aria-hidden="true" />
       <div className="crop tr" aria-hidden="true" />
@@ -257,80 +243,7 @@ const App = () => {
         } ${siteReady ? 'site-ready' : ''}`}
         style={{ backgroundColor: '#121110', color: '#F2EFE8' }}
       >
-        <div className="max-w-doc mx-auto px-4 sm:px-6 md:px-8 pt-6 pb-16 md:pb-24">
-          <header className="site-header flex flex-wrap items-center justify-between gap-4 py-4 mb-8 md:mb-12 border-b-[3px] border-ink/25">
-            <a
-              href="#home"
-              className="brand-mark font-display font-black text-xl sm:text-2xl uppercase tracking-tight no-underline leading-none"
-              aria-label="CyderCoder — Dosumu Michael home"
-            >
-              Cyder<span className="brand-coder">Coder</span>
-            </a>
-
-            <nav className="hidden md:flex items-center gap-6" aria-label="Primary">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="nav-link font-mono text-[12px] uppercase tracking-[0.08em] text-ink-muted hover:text-blue no-underline"
-                >
-                  {item.label}
-                </a>
-              ))}
-              <button type="button" onClick={() => setIsModalOpen(true)} className="btn-stamp !py-2.5 !px-4 !text-[11px]">
-                Hire me →
-              </button>
-            </nav>
-
-            <button
-              type="button"
-              onClick={() => setMenuOpen(true)}
-              className="md:hidden font-mono text-[11px] uppercase tracking-wider border-2 border-ink/40 px-3 py-2 text-ink"
-              aria-expanded={menuOpen}
-              aria-controls="mobile-nav"
-            >
-              Menu
-            </button>
-          </header>
-
-          {menuOpen && (
-            <div
-              id="mobile-nav"
-              className="mobile-menu fixed inset-0 z-[90] flex flex-col p-6 md:hidden"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Navigation"
-            >
-              <div className="flex justify-between items-center border-b-[3px] border-ink/25 pb-4 mb-10">
-                <span className="font-display font-black text-xl uppercase">Menu</span>
-                <button type="button" onClick={() => setMenuOpen(false)} className="btn-stamp !py-2 !px-4 !text-[11px]">
-                  Close
-                </button>
-              </div>
-              <nav className="flex flex-col gap-0">
-                {navItems.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="font-display font-black text-5xl uppercase leading-none py-4 border-b border-ink/20 text-ink no-underline"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMenuOpen(false);
-                    setIsModalOpen(true);
-                  }}
-                  className="menu-cta mt-10 btn-stamp w-full justify-center !py-5"
-                >
-                  Hire me →
-                </button>
-              </nav>
-            </div>
-          )}
+        <div className="max-w-doc mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-16 md:pb-24">
 
           <main id="main-content">
           {/* Hero */}
@@ -357,15 +270,25 @@ const App = () => {
                 developer &amp; creative engineer in Lagos. I ship React/Next.js apps, Three.js experiences,
                 AI tools, and fintech PWAs — clear goals, honest timelines, work you can click and use.
               </p>
-              <div className="hero-line flex flex-col sm:flex-row gap-3 relative z-10">
-                <a href="#projects" className="btn-stamp btn-stamp-paper">
-                  See my work →
+              <div className="hero-line flex flex-wrap items-center gap-3 relative z-10">
+                <a
+                  href="#projects"
+                  className="px-5 py-2.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-mono text-xs font-semibold uppercase tracking-wider no-underline transition-all shadow-lg shadow-blue-500/25 hover:scale-[1.02]"
+                >
+                  View Selected Work →
                 </a>
-                <a href="#ai" className="btn-stamp btn-stamp-outline">
-                  Try scope desk
+                <a
+                  href="#ai"
+                  className="px-5 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-slate-200 font-mono text-xs font-semibold uppercase tracking-wider no-underline transition-all hover:border-white/30"
+                >
+                  AI Architecture Scope
                 </a>
-                <button type="button" onClick={() => setIsModalOpen(true)} className="btn-stamp btn-stamp-outline">
-                  Hire me
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(true)}
+                  className="px-5 py-2.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-mono text-xs font-semibold uppercase tracking-wider transition-all hover:scale-[1.02] cursor-pointer"
+                >
+                  Hire Me
                 </button>
               </div>
             </div>

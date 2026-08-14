@@ -170,15 +170,15 @@ body {
 /* ── Hero — dark warm panel + soft accent (easy on the eyes) ─── */
 .hero-block {
   background:
-    linear-gradient(135deg, rgba(212, 101, 58, 0.14) 0%, transparent 42%),
-    linear-gradient(180deg, #24201C 0%, #181614 100%);
+    radial-gradient(ellipse at 80% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 60%),
+    linear-gradient(180deg, #131924 0%, #0d131a 100%);
   color: #F2EFE8 !important;
   position: relative;
   overflow: hidden;
-  /* start visible — animate only when ready (never leave content hidden) */
   clip-path: inset(0 0 0 0);
-  border: 1px solid rgba(232, 160, 122, 0.22);
-  border-left: 4px solid var(--orange);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
 }
 
 .site-ready .hero-block {
@@ -202,15 +202,18 @@ body {
 }
 
 .hero-eyebrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: rgba(212, 101, 58, 0.22);
-  color: #F0C4A8 !important;
-  border: 1px solid rgba(232, 160, 122, 0.4);
-  padding: 5px 10px;
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 6px 14px;
+  border-radius: 9999px;
   margin-bottom: 24px;
 }
 
