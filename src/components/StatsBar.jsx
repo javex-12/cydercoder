@@ -37,8 +37,8 @@ const StatCell = ({ stat, active }) => {
   const count = useCountUp(stat.value, active);
 
   return (
-    <div className="bg-surface p-4 sm:p-5">
-      <div className="font-mono text-[10px] sm:text-[11px] text-blue tracking-[0.1em] uppercase font-semibold mb-2">
+    <div className="bg-surface p-4 sm:p-5 rounded-2xl border border-white/5">
+      <div className="font-mono text-[10px] sm:text-[11px] text-orange-400 tracking-[0.1em] uppercase font-semibold mb-2">
         {stat.label}
       </div>
       <div className="font-display font-black text-[clamp(1.35rem,4vw,1.85rem)] uppercase leading-none text-ink">

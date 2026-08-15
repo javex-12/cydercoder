@@ -48,7 +48,7 @@ const ContactModal = ({ isOpen, onClose, onSend, initialMessage }) => {
         </div>
 
         <div className="px-5 sm:px-8 py-6 sm:py-8">
-          <label htmlFor="contact-message" className="block font-mono text-[11px] uppercase tracking-[0.08em] text-blue font-semibold mb-3">
+          <label htmlFor="contact-message" className="block font-mono text-[11px] uppercase tracking-[0.08em] text-orange-400 font-semibold mb-3">
             Your message
           </label>
           <textarea
@@ -56,7 +56,7 @@ const ContactModal = ({ isOpen, onClose, onSend, initialMessage }) => {
             ref={textareaRef}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="w-full h-40 bg-paper border-2 border-ink/30 p-4 text-base font-medium font-body text-ink resize-none focus:outline-none focus:border-blue"
+            className="w-full h-40 bg-paper border-2 border-ink/30 p-4 text-base font-medium font-body text-ink resize-none focus:outline-none focus:border-orange-500 rounded-xl"
             placeholder="What are you working on?"
           />
 

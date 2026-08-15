@@ -1,54 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
-const LINES = ['I build', 'things that', 'actually work.'];
-
-const HeroText = ({ ready }) => {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (!ready || !ref.current) return undefined;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) return undefined;
-
-    let killed = false;
-
-    const run = async () => {
-      const { gsap } = await import('gsap');
-      if (killed || !ref.current) return;
-
-      const inners = ref.current.querySelectorAll('.hero-title-inner');
-      gsap.fromTo(
-        inners,
-        { yPercent: 110, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 0.85,
-          stagger: 0.12,
-          ease: 'expo.out',
-          delay: 0.15,
-        }
-      );
-    };
-
-    run();
-    return () => {
-      killed = true;
-    };
-  }, [ready]);
-
+const HeroText = () => {
   return (
-    <h1
-      ref={ref}
-      className="relative z-10 font-display font-black text-[clamp(2.75rem,12vw,6rem)] uppercase leading-[0.82] tracking-tight mb-6"
-      style={{ color: '#F2EFE8' }}
-    >
-      {LINES.map((line) => (
-        <span key={line} className="hero-title-line block overflow-hidden">
-          <span className="hero-title-inner inline-block">{line}</span>
-        </span>
-      ))}
-    </h1>
+    <div className="space-y-4">
+      <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white leading-[1.05]">
+        Building web apps &amp; AI products with <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-rose-400">precision</span>.
+      </h1>
+    </div>
   );
 };
 

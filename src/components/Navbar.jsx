@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon, Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 
-export const Navbar = ({ onOpenContact, themeMode, toggleTheme, activeSection }) => {
+export const Navbar = ({ onOpenContact, activeSection, onNavigate }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -14,48 +14,74 @@ export const Navbar = ({ onOpenContact, themeMode, toggleTheme, activeSection })
   }, []);
 
   const navLinks = [
-    { label: 'About', href: '#about' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'AI Architecture', href: '#ai' },
-    { label: 'Work', href: '#projects' },
-    { label: 'FAQ', href: '#faq' },
+    { label: 'About', href: '#about', isRoute: false },
+    { label: 'Skills', href: '#skills', isRoute: false },
+    { label: 'Work', href: '#projects', isRoute: false },
+    { label: 'AI Lab', href: '/ai', isRoute: true },
+    { label: 'FAQ', href: '#faq', isRoute: false },
   ];
+
+  const handleLinkClick = (e, link) => {
+    if (link.isRoute) {
+      e.preventDefault();
+      onNavigate?.('/ai');
+    } else {
+      if (window.location.pathname !== '/') {
+        e.preventDefault();
+        onNavigate?.('/');
+        setTimeout(() => {
+          const el = document.querySelector(link.href);
+          el?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  };
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-[#0d131a]/90 backdrop-blur-xl border-b border-white/10 shadow-2xl py-3'
-          : 'bg-[#0d131a]/70 backdrop-blur-md border-b border-white/5 py-4'
+      className={`sticky top-0 z-50 transition-all duration-300 backdrop-blur-xl border-b ${
+        scrolled ? 'shadow-lg py-3' : 'py-4'
       }`}
+      style={{
+        backgroundColor: 'var(--theme-nav-bg)',
+        borderColor: 'var(--theme-border)',
+      }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Brand */}
-        <a href="#home" className="flex items-center gap-3 group no-underline">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500/20 to-emerald-500/20 border border-white/15 flex items-center justify-center font-mono font-bold text-sm text-blue-400 group-hover:border-blue-400/50 transition-colors">
+        <button
+          type="button"
+          onClick={() => onNavigate?.('/')}
+          className="flex items-center gap-3 group no-underline bg-transparent border-0 cursor-pointer text-left p-0"
+        >
+          <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center font-mono font-bold text-sm text-orange-500 group-hover:border-orange-500/50 transition-colors shadow-sm">
             C
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-extrabold text-lg tracking-tight text-slate-100 group-hover:text-blue-400 transition-colors leading-none">
-              CYDER<span className="text-blue-400">CODER</span>
+            <span className="font-display font-extrabold text-lg tracking-tight group-hover:text-orange-500 transition-colors leading-none" style={{ color: 'var(--theme-text)' }}>
+              CYDER<span className="text-orange-500">CODER</span>
             </span>
-            <span className="text-[10px] font-mono text-slate-400 tracking-wider uppercase mt-0.5">
+            <span className="text-[10px] font-mono tracking-wider uppercase mt-0.5" style={{ color: 'var(--theme-text-muted)' }}>
               Dosumu Michael
             </span>
           </div>
-        </a>
+        </button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/10 backdrop-blur-md">
+        <nav className="hidden md:flex items-center gap-1 p-1 rounded-full border backdrop-blur-md" style={{ backgroundColor: 'var(--theme-surface)', borderColor: 'var(--theme-border)' }}>
           {navLinks.map((link) => (
             <a
-              key={link.href}
+              key={link.label}
               href={link.href}
+              onClick={(e) => handleLinkClick(e, link)}
               className={`px-4 py-1.5 rounded-full font-mono text-xs tracking-wide uppercase transition-all no-underline ${
-                activeSection === link.href.replace('#', '')
-                  ? 'bg-blue-500/20 text-blue-300 font-semibold border border-blue-500/30'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+                activeSection === link.href.replace('#', '') || (link.isRoute && activeSection === 'ai')
+                  ? 'bg-orange-500/20 text-orange-400 font-semibold border border-orange-500/30 shadow-sm'
+                  : 'hover:bg-orange-500/10'
               }`}
+              style={{
+                color: activeSection === link.href.replace('#', '') || (link.isRoute && activeSection === 'ai') ? undefined : 'var(--theme-text-muted)',
+              }}
             >
               {link.label}
             </a>
@@ -66,25 +92,16 @@ export const Navbar = ({ onOpenContact, themeMode, toggleTheme, activeSection })
         <div className="hidden sm:flex items-center gap-3">
           {/* Availability Badge */}
           <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-mono font-medium text-emerald-300 uppercase tracking-wider">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[11px] font-mono font-medium text-emerald-400 uppercase tracking-wider">
               Open for hire
             </span>
           </div>
 
           <button
             type="button"
-            onClick={toggleTheme}
-            className="p-2 rounded-full bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
-            aria-label="Toggle theme mode"
-          >
-            {themeMode === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
-
-          <button
-            type="button"
             onClick={onOpenContact}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/40 text-blue-300 font-mono text-xs font-semibold uppercase tracking-wider transition-all hover:scale-[1.02] cursor-pointer shadow-lg shadow-blue-950/40"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-mono text-xs font-semibold uppercase tracking-wider transition-all hover:scale-[1.02] cursor-pointer shadow-md shadow-orange-950/30"
           >
             <span>Get in touch</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -95,16 +112,13 @@ export const Navbar = ({ onOpenContact, themeMode, toggleTheme, activeSection })
         <div className="flex sm:hidden items-center gap-2">
           <button
             type="button"
-            onClick={toggleTheme}
-            className="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300"
-            aria-label="Toggle theme mode"
-          >
-            {themeMode === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
-          <button
-            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-200"
+            className="p-2 rounded-lg border"
+            style={{
+              backgroundColor: 'var(--theme-surface)',
+              borderColor: 'var(--theme-border)',
+              color: 'var(--theme-text)',
+            }}
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -114,25 +128,35 @@ export const Navbar = ({ onOpenContact, themeMode, toggleTheme, activeSection })
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="sm:hidden fixed inset-x-0 top-[65px] bg-[#0d131a]/95 backdrop-blur-2xl border-b border-white/10 p-6 flex flex-col gap-4 shadow-2xl animate-in slide-in-from-top duration-200">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <span className="text-xs font-mono uppercase tracking-wider text-slate-400">Navigation</span>
+        <div
+          className="sm:hidden fixed inset-x-0 top-[65px] backdrop-blur-2xl border-b p-6 flex flex-col gap-4 shadow-2xl animate-in slide-in-from-top duration-200"
+          style={{
+            backgroundColor: 'var(--theme-nav-bg)',
+            borderColor: 'var(--theme-border)',
+          }}
+        >
+          <div className="flex items-center justify-between pb-3 border-b" style={{ borderColor: 'var(--theme-border)' }}>
+            <span className="text-xs font-mono uppercase tracking-wider" style={{ color: 'var(--theme-text-muted)' }}>Navigation</span>
             <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[10px] font-mono text-emerald-300 uppercase">Available</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-mono text-emerald-500 uppercase">Available</span>
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
             {navLinks.map((link) => (
               <a
-                key={link.href}
+                key={link.label}
                 href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-3 rounded-lg text-slate-200 hover:text-white hover:bg-white/5 font-mono text-sm uppercase tracking-wide no-underline flex items-center justify-between"
+                onClick={(e) => {
+                  setMobileMenuOpen(false);
+                  handleLinkClick(e, link);
+                }}
+                className="px-4 py-3 rounded-lg font-mono text-sm uppercase tracking-wide no-underline flex items-center justify-between"
+                style={{ color: 'var(--theme-text)' }}
               >
                 <span>{link.label}</span>
-                <span className="text-slate-500 text-xs">→</span>
+                <span className="text-xs" style={{ color: 'var(--theme-text-muted)' }}>→</span>
               </a>
             ))}
           </div>
@@ -143,7 +167,7 @@ export const Navbar = ({ onOpenContact, themeMode, toggleTheme, activeSection })
               setMobileMenuOpen(false);
               onOpenContact();
             }}
-            className="w-full mt-2 py-3 rounded-lg bg-blue-500/20 border border-blue-500/40 text-blue-300 font-mono text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2"
+            className="w-full mt-2 py-3 rounded-lg bg-blue-600 text-white font-mono text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2"
           >
             <span>Get in touch</span>
             <ArrowUpRight className="w-4 h-4" />
