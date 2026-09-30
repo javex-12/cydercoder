@@ -81,14 +81,4 @@ function apiDevPlugin() {
 
 export default defineConfig({
   plugins: [react(), apiDevPlugin()],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          three: ['three'],
-          gsap: ['gsap'],
-        },
-      },
-    },
-  },
 });

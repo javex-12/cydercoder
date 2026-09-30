@@ -1,127 +1,225 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+
+const ORANGE = '#F15A22';
+const INDIGO = '#3730A3';
 
 const featuredProjects = [
+  {
+    id: 'transformer-lm',
+    title: 'Custom AI Model (From Scratch)',
+    year: 'Still building',
+    tag: 'Still building',
+    tagline: 'An AI text model I am training from scratch that beats GPT-2 on BPB.',
+    description:
+      'I wanted to see if I could build a language model from scratch on my own. I wrote the code in Python and PyTorch and am currently training it. On the BPB test (which measures how well a model predicts text), it scores better than GPT-2.',
+    stack: 'Python · PyTorch · GPU',
+  },
   {
     id: 'doorstep',
     title: 'Doorstep',
     year: '2025',
-    tagline: 'Send files from your phone to your laptop. No cable, no WhatsApp, no internet data.',
+    tag: 'Mobile & Computer App',
+    tagline: 'Send files between your phone and laptop without internet or cables.',
     description:
-      'You scan a code on your screen with your phone, and the file moves across — instantly, directly. No uploading to Google Drive, no sending it to yourself on WhatsApp. Works on any Wi-Fi, completely private.',
-    stack: 'WebRTC · Vanilla JS · PWA',
+      'Moves files directly over Wi-Fi without using your mobile data or uploading to the cloud. You download the app on your phone (Android) and your computer (Windows, Mac, or Linux), scan a QR code, and send your files straight across.',
+    stack: 'Flutter · Android · Windows · Mac · Linux',
     liveUrl: 'https://trydoorstep.vercel.app',
+    liveLabel: 'Download the Apps ↗',
     githubUrl: 'https://github.com/javex-12/Doorstep.git',
   },
   {
     id: 'swiftlink',
     title: 'SwiftLink Pro',
     year: '2025',
-    tagline: 'A real shop page for people selling on WhatsApp.',
+    tag: 'Online Stores',
+    tagline: 'A simple online shop for anyone selling products on WhatsApp.',
     description:
-      'If you sell clothes, shoes, or food on WhatsApp, SwiftLink gives you a clean shop page in under a minute. Your customer browses, picks what they want, and the order lands straight in your WhatsApp — formatted and clear. No back-and-forth.',
-    stack: 'Next.js · React · Tailwind CSS',
+      'Gives WhatsApp sellers a clean website where customers can view products with prices, add items to a cart, and click checkout. The formatted order goes straight into the seller’s WhatsApp ready to deliver.',
+    stack: 'Next.js · React · WhatsApp',
     liveUrl: 'https://swiftlinkpro.vercel.app/',
+    liveLabel: 'View Live Store ↗',
   },
   {
     id: 'biobyte',
     title: 'BioByte Pro',
     year: '2025',
-    tagline: 'WAEC Biology practice that works even when your data finishes.',
+    tag: 'Education',
+    tagline: 'WAEC Biology study app that works even without internet data.',
     description:
-      'A study app for secondary school students preparing for WAEC. Past questions, topic-by-topic drills, instant explanations — all of it works offline. You download once, you study anytime.',
-    stack: 'React · Service Workers · IndexedDB',
+      'A study tool for secondary school students preparing for WAEC exams. Has over 100 past questions, topic tests, and explanations that keep working even when you run out of data.',
+    stack: 'React · Works Offline',
     liveUrl: 'https://biobyte.vercel.app/',
+    liveLabel: 'Try the App ↗',
   },
   {
     id: 'ajosafe',
     title: 'AjoSafe',
     year: '2025',
-    tagline: 'Digital records for your Ajo or Esusu savings group.',
+    tag: 'Group Savings',
+    tagline: 'A digital record book for Ajo and Esusu savings groups.',
     description:
-      'Keeps track of who paid, who is next to collect, and the full contribution history — so nobody is arguing over a paper book. Built directly with Ajo coordinators who were tired of disputes.',
-    stack: 'Supabase · PostgreSQL · PWA',
+      'Replaces paper notebooks for group savings circles. Keeps clear records of who paid, who is next to collect, and the full payment history so members do not argue over money.',
+    stack: 'Next.js · Database',
     liveUrl: 'https://ajosafe.vercel.app/',
+    liveLabel: 'Open App ↗',
   },
   {
     id: 'naijabot',
     title: 'Naija Bot',
     year: '2024',
-    tagline: 'A chatbot that understands how Nigerians actually talk.',
+    tag: 'Chatbot',
+    tagline: 'A chatbot that understands Nigerian Pidgin and local slang.',
     description:
-      'Most AI assistants trip over Pidgin, local slang, and Nigerian context. This one was built for exactly that — tested with real phrases, real scenarios, real humour.',
-    stack: 'React · OpenAI API · Streaming UI',
+      'A chatbot that actually understands how Nigerians talk in daily life — local idioms, street slang, and Pidgin included.',
+    stack: 'React · AI',
     liveUrl: 'https://naija-bot.vercel.app/',
+    liveLabel: 'Chat with it ↗',
   },
   {
     id: 'chaoticshift',
     title: 'Chaotic Shift',
     year: '2024',
-    tagline: 'An experiment — AI answers that move and bounce on screen like physics.',
+    tag: 'Interactive',
+    tagline: 'AI words that bounce around the screen like balls.',
     description:
-      'Instead of a boring chat box, the AI\'s response breaks apart into words that fly around the screen and react to each other. A creative experiment in how AI output can look and feel different.',
-    stack: 'React · Google Gemini API · Canvas',
+      'An experiment where words from an AI response break apart into moving pieces that bounce off each other and react to your mouse.',
+    stack: 'React · Physics Canvas',
     liveUrl: 'https://cyswitch.vercel.app/',
+    liveLabel: 'Play with it ↗',
   },
 ];
 
 const collaborations = [
   {
-    group: 'WhatsApp vendors and market sellers',
+    group: 'Market Sellers and WhatsApp Vendors',
     summary:
-      'Sat with sellers in Lagos, watched how they take orders on WhatsApp, and built SwiftLink around their exact problems. They tested every version. The checkout flow they use now took four rounds of feedback to get right.',
+      'I spoke with sellers in Lagos, watched how they take orders in WhatsApp chats, and built SwiftLink around what they needed.',
   },
   {
-    group: 'Secondary school students and biology tutors',
+    group: 'WAEC Students and Teachers',
     summary:
-      'Worked with teachers and students preparing for WAEC to check that every module in BioByte Pro was accurate and actually useful — not just copied from a textbook.',
+      'I worked with secondary school teachers and students to verify that the biology questions and explanations in BioByte were accurate.',
   },
   {
-    group: 'Ajo and Esusu group coordinators',
+    group: 'Savings Group Coordinators',
     summary:
-      'Designed AjoSafe side by side with savings circle managers. They showed me exactly how disputes happen in paper-based groups, and that shaped every feature in the app.',
+      'I talked with people who manage Ajo savings groups to learn how disputes happen with paper books, which helped me build AjoSafe.',
   },
   {
-    group: 'Choir singers and music directors',
+    group: 'Choir Members',
     summary:
-      'Built CySolfa with choir members who needed a quick, phone-friendly tool for Tonic Solfa practice. Their feedback made it simpler and faster than the first version.',
+      'Built CySolfa with singers who needed a simple phone app to practice their Tonic Solfa notes on the go.',
   },
 ];
 
 const other = [
-  { title: 'Loading Systems', desc: 'A set of 20+ small animated loading indicators. Lightweight and easy to drop into any project.', url: 'https://loading-screen-1.vercel.app/' },
-  { title: 'Cydemy', desc: 'A clean course platform for reading and watching technical content without distractions.', url: 'https://cydemy.vercel.app/' },
-  { title: 'Adex Concerns', desc: 'Website for a technical engineering firm — clean, professional, inquiry-focused.', url: 'https://adexconcerns.vercel.app/' },
-  { title: 'CySolfa', desc: 'A practice tool for choir singers who want to train their ear and read Tonic Solfa on the go.', url: 'https://cysolfa.vercel.app/' },
+  { title: 'Loading Systems', desc: 'Over 20 animated loading icons for websites.', url: 'https://loading-screen-1.vercel.app/' },
+  { title: 'Cydemy', desc: 'A clean reading and video tutorial platform.', url: 'https://cydemy.vercel.app/' },
+  { title: 'Adex Concerns', desc: 'Website for an engineering consultancy company.', url: 'https://adexconcerns.vercel.app/' },
+  { title: 'CySolfa', desc: 'Practice tool for choir singers on their phones.', url: 'https://cysolfa.vercel.app/' },
 ];
 
 const TICKER_ITEMS = [
-  'React', 'Next.js', 'TypeScript', 'Node.js', 'WebRTC', 'Web Audio API',
-  'Supabase', 'PostgreSQL', 'IndexedDB', 'Service Workers', 'Tailwind CSS',
-  'Python', 'Machine Learning', 'Canvas API', 'PWA', 'REST APIs',
+  'Python', 'PyTorch', 'Flutter', 'Dart', 'React', 'Next.js',
+  'TypeScript', 'JavaScript', 'Node.js', 'PostgreSQL', 'WebRTC',
+  'Tailwind CSS', 'Mobile Apps', 'Web Apps',
 ];
 
+/* ── PENCIL UNDERLINE (RESPONSIVE, STOPS EXACTLY UNDER MICHAEL) ───────────── */
+function PencilUnderline() {
+  return (
+    <svg
+      viewBox="0 0 400 12"
+      preserveAspectRatio="none"
+      className="w-full h-full block"
+      aria-hidden="true"
+    >
+      <path
+        d="M2,6 C30,2 65,10 100,5 C135,1 175,9 215,5 C255,1 295,9 335,5 C365,2 385,7 398,5"
+        stroke="#F15A22"
+        strokeWidth="3.5"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{
+          strokeDasharray: 500,
+          strokeDashoffset: 500,
+          animation: 'draw-line 1s ease 0.2s forwards',
+        }}
+      />
+      <path
+        d="M4,9 C35,6 70,11 105,8 C145,5 185,10 225,7 C265,4 305,10 345,7 C375,5 388,8 396,8"
+        stroke="#F15A22"
+        strokeWidth="1.2"
+        fill="none"
+        strokeLinecap="round"
+        opacity="0.35"
+        style={{
+          strokeDasharray: 500,
+          strokeDashoffset: 500,
+          animation: 'draw-line 1.2s ease 0.3s forwards',
+        }}
+      />
+    </svg>
+  );
+}
+
+/* ── SOFT MARKER HIGHLIGHT ───────────────────────────────────────────────── */
+function Highlight({ children }) {
+  return (
+    <span className="relative inline-block font-semibold text-gray-900">
+      <span
+        className="absolute inset-0 -skew-x-2 rounded-sm"
+        style={{
+          background: '#FFE8DE',
+          top: '12%',
+          bottom: '2%',
+          left: '-3px',
+          right: '-3px',
+        }}
+        aria-hidden="true"
+      />
+      <span className="relative">{children}</span>
+    </span>
+  );
+}
+
+/* ── PROJECT ROW ─────────────────────────────────────────────────────────── */
 function ProjectRow({ project, index, expanded, onToggle }) {
   return (
-    <div className="border-b border-neutral-800 last:border-b-0">
+    <div className="border-b border-gray-100 last:border-b-0">
       <button
         type="button"
         onClick={onToggle}
-        className="w-full text-left py-5 flex items-baseline gap-4 group focus:outline-none"
+        className="w-full text-left py-4 sm:py-5 flex items-start sm:items-baseline gap-3 sm:gap-4 group focus:outline-none"
       >
-        <span className="font-mono text-xs text-neutral-700 w-5 shrink-0 pt-px">
+        <span
+          className="font-mono text-xs w-6 shrink-0 mt-1 sm:mt-0 font-bold"
+          style={{ color: ORANGE }}
+        >
           {String(index + 1).padStart(2, '0')}
         </span>
-        <span className="flex-1 min-w-0 space-y-0.5">
-          <span className="block text-base font-semibold text-neutral-200 group-hover:text-white transition-colors">
-            {project.title}
+
+        <span className="flex-1 min-w-0">
+          <span className="flex flex-wrap items-baseline gap-2 mb-1">
+            <span className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-[#F15A22] transition-colors">
+              {project.title}
+            </span>
+            <span
+              className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full text-white"
+              style={{ background: project.tag === 'Still building' ? ORANGE : INDIGO }}
+            >
+              {project.tag}
+            </span>
           </span>
-          <span className="block text-sm text-neutral-600">{project.tagline}</span>
+          <span className="block text-sm text-gray-600 leading-snug">{project.tagline}</span>
         </span>
+
         <span className="flex items-center gap-3 shrink-0 ml-2">
-          <span className="font-mono text-xs text-neutral-700 hidden sm:block">{project.year}</span>
+          <span className="font-mono text-xs text-gray-400 hidden sm:block">{project.year}</span>
           <span
-            className={`text-neutral-500 transition-transform duration-200 text-lg leading-none ${
-              expanded ? 'rotate-45' : 'group-hover:text-neutral-300'
+            className={`text-lg leading-none transition-transform duration-200 ${
+              expanded ? 'rotate-45 text-[#F15A22]' : 'text-gray-300 group-hover:text-[#F15A22]'
             }`}
           >
             ↗
@@ -130,26 +228,29 @@ function ProjectRow({ project, index, expanded, onToggle }) {
       </button>
 
       {expanded && (
-        <div className="pl-9 pb-6 space-y-4">
-          <p className="text-sm text-neutral-400 leading-relaxed max-w-xl">{project.description}</p>
-          <p className="font-mono text-xs text-neutral-700">{project.stack}</p>
+        <div className="pl-9 sm:pl-10 pb-6 space-y-3">
+          <p className="text-sm text-gray-700 leading-relaxed max-w-xl">{project.description}</p>
+          <p className="font-mono text-xs text-gray-400 font-medium">Built with: {project.stack}</p>
           <div className="flex flex-wrap gap-3 pt-1">
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-colors"
-            >
-              Open live ↗
-            </a>
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-white text-xs font-bold transition-opacity hover:opacity-90 shadow-sm"
+                style={{ background: ORANGE }}
+              >
+                {project.liveLabel || 'Open Live App ↗'}
+              </a>
+            )}
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 text-xs hover:text-white hover:border-neutral-500 transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-gray-300 text-gray-700 text-xs font-semibold hover:border-gray-500 hover:text-gray-900 transition-colors bg-white shadow-sm"
               >
-                Source code
+                View Code on GitHub
               </a>
             )}
           </div>
@@ -160,22 +261,8 @@ function ProjectRow({ project, index, expanded, onToggle }) {
 }
 
 const App = () => {
-  const [copied, setCopied]           = useState(false);
-  const [timeString, setTimeString]   = useState('');
-  const [expandedId, setExpandedId]   = useState(null);
-
-  useEffect(() => {
-    const tick = () =>
-      setTimeString(
-        new Date().toLocaleTimeString('en-US', {
-          timeZone: 'Africa/Lagos',
-          hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true,
-        })
-      );
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
+  const [copied, setCopied]         = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
 
   const copyEmail = () => {
     navigator.clipboard.writeText('michaeldosunmu22@gmail.com');
@@ -186,189 +273,187 @@ const App = () => {
   const toggle = (id) => setExpandedId((prev) => (prev === id ? null : id));
 
   return (
-    <div className="min-h-screen bg-[#0d0d0f] text-[#e4e4e7] font-sans antialiased selection:bg-neutral-800">
+    <div className="min-h-screen bg-white text-gray-900 font-sans antialiased selection:bg-orange-100 overflow-x-hidden w-full">
 
-      {/* ── STICKY TOP BAR ─────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 border-b border-neutral-800/60 bg-[#0d0d0f]/90 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-5 sm:px-8 h-12 flex items-center justify-between">
+      {/* ── TOP BAR (CLEAN & MINIMAL) ────────────────────────────────── */}
+      <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm w-full">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2.5 group">
-            <img src="/logo.jpg" alt="CyderCoder logo" className="w-7 h-7 rounded-md" />
-            <span className="text-sm font-semibold text-white tracking-tight group-hover:text-neutral-300 transition-colors">Dosumu Michael</span>
+            <img src="/logo.jpg" alt="CyderCoder" className="w-6 h-6 rounded-md" />
+            <span className="text-sm font-bold text-gray-900 group-hover:text-[#F15A22] transition-colors tracking-tight">
+              Dosumu Michael
+            </span>
           </a>
-          <div className="flex items-center gap-3 text-xs font-mono text-neutral-500">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="hidden sm:block">Lagos · WAT</span>
-            <span className="text-neutral-400">{timeString}</span>
-          </div>
         </div>
       </header>
 
-      <div className="max-w-3xl mx-auto px-5 sm:px-8">
+      {/* ── NAMEPLATE ────────────────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-4 w-full">
+        <h1
+          className="font-display uppercase leading-[0.92] tracking-tight font-black select-none"
+          style={{ fontSize: 'clamp(2.4rem, 9.5vw, 6.5rem)' }}
+        >
+          <span className="block text-gray-900">DOSUMU</span>
+          {/* Constrained strictly to the text MICHAEL */}
+          <span className="relative inline-block pb-1.5 sm:pb-3" style={{ color: ORANGE }}>
+            <span className="relative z-10">MICHAEL</span>
+            {/* SVG line terminates under the letter L */}
+            <span className="absolute left-0 bottom-0 w-full h-[6px] sm:h-[10px] pointer-events-none">
+              <PencilUnderline />
+            </span>
+          </span>
+        </h1>
 
-        {/* ── HERO ───────────────────────────────────────────────────── */}
-        <section className="pt-16 pb-12 space-y-6">
-          <div className="overflow-hidden">
-            <h1
-              className="font-display text-[clamp(3.5rem,12vw,7rem)] font-black leading-none tracking-tight text-white uppercase"
-              style={{ letterSpacing: '-0.03em' }}
-            >
-              CYDER
-              <span className="text-[#D4653A]">.</span>
-            </h1>
-          </div>
-
-          <p className="text-base sm:text-lg text-neutral-400 leading-relaxed max-w-xl">
-            I make web apps and digital tools. Based in Lagos. Most of my work is for
-            real people with real problems — market sellers, students, savings groups,
-            musicians. If a problem can be solved with a good website or app, I build it.
-          </p>
-
-          <div className="flex flex-wrap gap-4 text-sm">
-            <a
-              href="https://github.com/javex-12"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-neutral-500 hover:text-white transition-colors"
-            >
+        {/* Clean, simple role and links strip (no messy badges) */}
+        <div className="flex items-center justify-between gap-4 mt-6 pt-4 border-t border-gray-100 text-xs sm:text-sm text-gray-600">
+          <p className="font-semibold text-gray-900">Software &amp; Machine Learning Engineer</p>
+          <div className="flex items-center gap-4 font-mono text-xs text-gray-500">
+            <a href="https://github.com/javex-12" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 transition-colors">
               GitHub ↗
             </a>
+            <a href="https://wa.me/2348085741430" target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 transition-colors">
+              WhatsApp ↗
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BIO ──────────────────────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-8 w-full">
+        <p className="text-base sm:text-lg text-gray-700 leading-relaxed max-w-2xl font-normal">
+          I am a software engineer and machine learning builder based in Lagos.
+          I build practical apps like Doorstep, simple online shops for vendors, and right now I am <Highlight>building an AI model from scratch</Highlight> that beats GPT-2 on BPB.
+        </p>
+      </section>
+
+      {/* ── TICKER (INFINITE AUTOMATIC AUTO-SCROLLING BANNER) ─────────── */}
+      <div
+        className="w-full max-w-full overflow-hidden border-y border-gray-100 py-3 select-none"
+        style={{ background: '#FFF8F5' }}
+      >
+        <div className="animate-ticker flex gap-8 whitespace-nowrap">
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+            <span key={i} className="text-xs font-mono font-bold uppercase tracking-wider" style={{ color: ORANGE }}>
+              {item}
+              <span className="ml-8 text-orange-200">·</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── WORK ─────────────────────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16 w-full">
+        <div className="flex items-baseline justify-between mb-6">
+          <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-gray-400">Things I have built</h2>
+          <span className="text-xs font-mono text-gray-400">{featuredProjects.length} projects</span>
+        </div>
+        <div className="border-t border-gray-100">
+          {featuredProjects.map((p, i) => (
+            <ProjectRow
+              key={p.id}
+              project={p}
+              index={i}
+              expanded={expandedId === p.id}
+              onToggle={() => toggle(p.id)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* ── REAL PEOPLE ──────────────────────────────────────────────── */}
+      <section style={{ background: '#F9F7FF' }} className="py-12 sm:py-16 w-full">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <h2 className="text-xs font-mono font-bold uppercase tracking-widest mb-6" style={{ color: INDIGO }}>
+            Tested with real people
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            {collaborations.map((c) => (
+              <div key={c.group} className="space-y-1.5 bg-white p-5 rounded-2xl border border-indigo-50/50 shadow-sm">
+                <span className="text-sm font-bold text-gray-900 block">{c.group}</span>
+                <p className="text-sm text-gray-600 leading-relaxed">{c.summary}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── OTHER TOOLS ──────────────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16 w-full">
+        <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-gray-400 mb-4">
+          Other practical tools
+        </h2>
+        <div className="divide-y divide-gray-100 border-t border-b border-gray-100">
+          {other.map((item) => (
+            <a
+              key={item.title}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between gap-4 py-4 group"
+            >
+              <div className="min-w-0">
+                <span className="text-sm font-semibold text-gray-800 group-hover:text-[#F15A22] transition-colors block">
+                  {item.title}
+                </span>
+                <span className="text-xs text-gray-500 block mt-0.5">{item.desc}</span>
+              </div>
+              <span className="text-gray-300 group-hover:text-[#F15A22] transition-colors shrink-0 text-sm">↗</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* ── ABOUT ME ─────────────────────────────────────────────────── */}
+      <section style={{ background: '#FFF8F5' }} className="py-12 sm:py-16 w-full">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <h2 className="text-xs font-mono font-bold uppercase tracking-widest mb-3" style={{ color: ORANGE }}>
+            About me
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-700 leading-relaxed">
+            <p>
+              My name is Dosumu Michael. I live in Lagos, Nigeria. I like building things from scratch — from training a model that beats GPT-2 on BPB, to building apps like Doorstep that transfer files between devices without internet.
+            </p>
+            <p>
+              I build tools that save real people time and money. I work with clients, startups, and companies from anywhere in the world. Available for full-time roles, contract work, and freelance builds.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CALL TO ACTION ───────────────────────────────────────────── */}
+      <section style={{ background: ORANGE }} className="py-12 sm:py-16 w-full text-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-black leading-tight">
+              Have a project in mind?<br />Let’s build it.
+            </h2>
+            <p className="text-orange-100 mt-1 text-sm">Available for work right now.</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="px-6 py-3 bg-white font-bold text-sm rounded-full hover:bg-orange-50 transition-colors cursor-pointer text-center shadow-sm"
+              style={{ color: ORANGE }}
+            >
+              {copied ? '✓ Email copied!' : 'Email me ↗'}
+            </button>
             <a
               href="https://wa.me/2348085741430"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-500 hover:text-white transition-colors"
+              className="px-6 py-3 border-2 border-white text-white font-bold text-sm rounded-full hover:bg-white/15 transition-colors text-center"
             >
               WhatsApp ↗
             </a>
-            <button
-              type="button"
-              onClick={copyEmail}
-              className="text-neutral-500 hover:text-white transition-colors cursor-pointer font-mono"
-            >
-              {copied ? '✓ copied' : 'Email'}
-            </button>
           </div>
-        </section>
-
-        {/* ── SCROLLING TICKER ───────────────────────────────────────── */}
-        <div className="relative -mx-5 sm:-mx-8 overflow-hidden border-y border-neutral-800/60 py-3 mb-16 select-none">
-          <div
-            className="flex gap-8 whitespace-nowrap"
-            style={{ animation: 'ticker 28s linear infinite', width: 'max-content' }}
-          >
-            {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-              <span key={i} className="text-xs font-mono text-neutral-600 uppercase tracking-widest">
-                {item}
-                <span className="ml-8 text-neutral-800">·</span>
-              </span>
-            ))}
-          </div>
-          <style>{`
-            @keyframes ticker {
-              from { transform: translateX(0); }
-              to   { transform: translateX(-50%); }
-            }
-          `}</style>
         </div>
+      </section>
 
-        {/* ── WORK ───────────────────────────────────────────────────── */}
-        <section className="mb-20">
-          <div className="flex items-baseline justify-between mb-6">
-            <h2 className="text-xs font-mono text-neutral-600 uppercase tracking-widest">Work</h2>
-            <span className="text-xs font-mono text-neutral-800">{featuredProjects.length} projects</span>
-          </div>
-          <div className="border-t border-neutral-800">
-            {featuredProjects.map((p, i) => (
-              <ProjectRow
-                key={p.id}
-                project={p}
-                index={i}
-                expanded={expandedId === p.id}
-                onToggle={() => toggle(p.id)}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* ── COLLABS ────────────────────────────────────────────────── */}
-        <section className="mb-20 space-y-8">
-          <h2 className="text-xs font-mono text-neutral-600 uppercase tracking-widest">Who I've worked with</h2>
-          {collaborations.map((c) => (
-            <div key={c.group} className="space-y-1.5">
-              <span className="text-sm font-semibold text-neutral-300">{c.group}</span>
-              <p className="text-sm text-neutral-500 leading-relaxed max-w-xl">{c.summary}</p>
-            </div>
-          ))}
-        </section>
-
-        {/* ── OTHER ──────────────────────────────────────────────────── */}
-        <section className="mb-20">
-          <h2 className="text-xs font-mono text-neutral-600 uppercase tracking-widest mb-4">Other things I built</h2>
-          <div className="divide-y divide-neutral-800/50 border-t border-b border-neutral-800/50">
-            {other.map((item) => (
-              <a
-                key={item.title}
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between gap-4 py-4 group"
-              >
-                <div className="min-w-0">
-                  <span className="text-sm text-neutral-300 group-hover:text-white transition-colors block">{item.title}</span>
-                  <span className="text-xs text-neutral-600 block mt-0.5">{item.desc}</span>
-                </div>
-                <span className="text-neutral-700 group-hover:text-neutral-400 transition-colors shrink-0 text-sm">↗</span>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        {/* ── ABOUT ──────────────────────────────────────────────────── */}
-        <section className="mb-20 space-y-3">
-          <h2 className="text-xs font-mono text-neutral-600 uppercase tracking-widest">About me</h2>
-          <div className="space-y-3 text-sm text-neutral-500 leading-relaxed">
-            <p>
-              I'm a software and machine learning engineer. I like building things
-              that actually get used — apps that work on slow internet, that make
-              sense to first-time users, that solve a problem people actually have.
-            </p>
-            <p>
-              I work with React, Next.js, Node.js, and Python. Most of my recent
-              projects are offline-first: they load once and keep working even when
-              you lose your connection.
-            </p>
-            <p>
-              Open to freelance work, contracts, and full-time roles. Worldwide.
-            </p>
-          </div>
-        </section>
-
-        {/* ── CONTACT ────────────────────────────────────────────────── */}
-        <section className="mb-20 space-y-3">
-          <h2 className="text-xs font-mono text-neutral-600 uppercase tracking-widest">Get in touch</h2>
-          <button
-            type="button"
-            onClick={copyEmail}
-            className="block text-sm font-mono text-neutral-400 hover:text-white transition-colors cursor-pointer"
-          >
-            {copied ? '✓ copied to clipboard' : 'michaeldosunmu22@gmail.com'}
-          </button>
-          <a
-            href="https://wa.me/2348085741430"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-sm font-mono text-neutral-600 hover:text-neutral-400 transition-colors"
-          >
-            +234 808 574 1430 · WhatsApp
-          </a>
-        </section>
-
-        {/* ── FOOTER ─────────────────────────────────────────────────── */}
-        <footer className="border-t border-neutral-800/50 py-6 flex items-center justify-between text-xs font-mono text-neutral-700">
-          <span>© 2025 Dosumu Michael</span>
-          <span>Lagos, NG</span>
-        </footer>
-      </div>
+      {/* ── FOOTER (KISS, DRY, NO REPETITION) ────────────────────────── */}
+      <footer className="py-6 w-full text-center text-xs text-gray-400 font-mono">
+        <p>© 2025 Dosumu Michael</p>
+      </footer>
     </div>
   );
 };
