@@ -14,10 +14,11 @@ export const Navbar = ({ onOpenContact, activeSection, onNavigate }) => {
   }, []);
 
   const navLinks = [
-    { label: 'About', href: '#about', isRoute: false },
-    { label: 'Skills', href: '#skills', isRoute: false },
     { label: 'Work', href: '#projects', isRoute: false },
+    { label: 'Process', href: '#process', isRoute: false },
+    { label: 'Capabilities', href: '#skills', isRoute: false },
     { label: 'AI Lab', href: '/ai', isRoute: true },
+    { label: 'About', href: '#about', isRoute: false },
     { label: 'FAQ', href: '#faq', isRoute: false },
   ];
 
@@ -54,15 +55,17 @@ export const Navbar = ({ onOpenContact, activeSection, onNavigate }) => {
           onClick={() => onNavigate?.('/')}
           className="flex items-center gap-3 group no-underline bg-transparent border-0 cursor-pointer text-left p-0"
         >
-          <div className="w-8 h-8 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center font-mono font-bold text-sm text-orange-500 group-hover:border-orange-500/50 transition-colors shadow-sm">
-            C
-          </div>
+          <img
+            src="/logo.svg"
+            alt="CyderCoder Logo"
+            className="w-8 h-8 rounded-lg shadow-sm group-hover:scale-105 transition-transform"
+          />
           <div className="flex flex-col">
-            <span className="font-display font-extrabold text-lg tracking-tight group-hover:text-orange-500 transition-colors leading-none" style={{ color: 'var(--theme-text)' }}>
+            <span className="font-display font-extrabold text-lg tracking-tight group-hover:text-orange-400 transition-colors leading-none" style={{ color: 'var(--theme-text)' }}>
               CYDER<span className="text-orange-500">CODER</span>
             </span>
             <span className="text-[10px] font-mono tracking-wider uppercase mt-0.5" style={{ color: 'var(--theme-text-muted)' }}>
-              Dosumu Michael
+              Dosumu Michael · Full-Stack
             </span>
           </div>
         </button>

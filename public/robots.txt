@@ -1,12 +1,4 @@
-# https://cydercoder.vercel.app/robots.txt
 User-agent: *
 Allow: /
 
-# Block non-content / tooling paths if ever added
-Disallow: /api/
-Disallow: /cdn-cgi/
-
-# Sitemaps
 Sitemap: https://cydercoder.vercel.app/sitemap.xml
-
-# Crawl-delay is ignored by Google; left unset intentionally

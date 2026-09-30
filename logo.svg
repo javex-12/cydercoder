@@ -1,7 +1,16 @@
-<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="500" height="500" rx="100" fill="#1A1A1A"/>
-    <!-- Stylized 'C' with a cybernetic/circuit feel -->
-    <path d="M350 150C320 120 280 100 240 100C162.68 100 100 162.68 100 240C100 317.32 162.68 380 240 380C280 380 320 360 350 330" stroke="#d67a5c" stroke-width="40" stroke-linecap="round"/>
-    <circle cx="240" cy="240" r="40" fill="#d67a5c"/>
-    <path d="M240 240L380 240" stroke="#d67a5c" stroke-width="20" stroke-dasharray="10 20"/>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="96" fill="#111111"/>
+  <path
+    d="M348 164
+       C348 164 290 136 224 152
+       C158 168 124 216 124 256
+       C124 296 158 344 224 360
+       C290 376 348 348 348 348"
+    stroke="#f0f0f0"
+    stroke-width="56"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+  <circle cx="364" cy="256" r="22" fill="#D4653A"/>
 </svg>
